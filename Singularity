@@ -22,7 +22,7 @@ TAG=0.25.0
 git checkout $TAG
 sed -i -E "s/0.0.0/$TAG/" package.json
 npm install -g /src
-rm -f /src
+rm -rf /src
 
 #install octave
 apt-get update
