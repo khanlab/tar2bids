@@ -48,7 +48,7 @@ def infotodict(seqinfo):
                     info[movie].append({'item': s.series_id})
 
         
-        elif ('bold' in s.protocol_name):
+        elif ('bold' in s.protocol_name or 'resting_state' in s.series_description):
             if ('mbep2d' in (s.series_description).strip() or 'ep_bold' in (s.series_description).strip() ):
                 if (s.dim4==1 and  'SBRef' in (s.series_description).strip()):
                     info[rest_sbref].append({'item': s.series_id})
