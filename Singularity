@@ -31,13 +31,11 @@ echo addpath\(genpath\(\'/opt/tar2bids/etc/octave\'\)\)\; >> /etc/octave.conf
 
 #install gnu parallel 
 apt-get update 
-apt-get install -y parallel
+apt-get install -y parallel 
 
-%environment
-
-export LANGUAGE="en_CA:en"
-unset LC_AL
-export LANG="en_CA.UTF-8"
+export LANGUAGE="en_US.UTF-8"
+echo 'LANGUAGE="en_US.UTF-8"' >> /etc/default/locale
+echo 'LC_ALL="en_US.UTF-8"' >> /etc/default/locale
 
 %runscript
 exec /opt/tar2bids/tar2bids $@
