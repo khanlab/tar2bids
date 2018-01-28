@@ -1,0 +1,122 @@
+#!/bin/bash
+
+
+function usage {
+
+	echo "Runs dicom tarball(s) to BIDS conversion using heudiconv"
+	echo "Usage $0  <optional flags>  '<{subject} search string>'  <in tar file(s)>"
+	echo ""
+	echo " Optional flags (must appear before required arguments):"
+	echo "	-o <output_dir> : default=$output_dir"
+	echo "	-h <heuristic.py> : default=$heuristic"
+	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
+	echo ""
+	echo " Available heuristic files:"
+	for h in `ls ${heuristic_dir}/*.py`
+	do
+		echo "	${h##*/}"
+	done
+	exit 1
+}
+
+execpath=`dirname $0`
+execpath=`realpath $execpath`
+
+heuristic_dir=$execpath/heuristics
+output_dir=./bids
+heuristic=cfmm_bold_rest.py
+heudi_opts=
+
+while getopts "o:h:O:" options; do
+ case $options in
+    o ) echo "	Overriding output dir as: $OPTARG" >&2
+	output_dir=`realpath $OPTARG`;;
+    h ) echo "	Overriding heuristic file as: $OPTARG" >&2
+	heuristic=`realpath $OPTARG`;;
+    O ) echo "	Using heudiconv options: $OPTARGS"  >&2
+	heudi_opts=$OPTARG;;
+
+    * ) usage
+	exit 1;;
+ esac
+done
+
+shift $((OPTIND-1))
+
+
+if [ "$#" -lt 2 ]
+then
+  usage;
+  exit 1;
+fi
+
+search=$1
+shift 1
+
+
+output_dir=`realpath $output_dir`
+code_dir=$output_dir/code
+sourcedata=$output_dir/sourcedata
+mkdir -p $code_dir $sourcedata
+
+datestring=`date +%Y-%m-%d_%Hh%Mm`
+log_dir=$code_dir/tar2bids_$datestring
+if [ -e $log_dir ]
+then 
+ log_dir=${log_dir}_`date +%M`
+fi
+
+mkdir -p $log_dir
+
+subjlist=$log_dir/subjects-list.txt
+validator_out=$log_dir/bids-validator.txt
+heudiconv_out=$log_dir/heudiconv
+
+# parse tarfile names to get subjids
+for tar in $@
+do
+	filename=${tar##*/}
+
+	folder=`realpath $(dirname $tar)`
+
+	subjid=`$execpath/etc/getSubjID $search $filename`
+	if [ ! $? = 0 ]
+	then
+		echo ERROR in $0: no matching subjid in tar: $tar
+		echo $subjid
+		exit 1
+	fi
+
+	echo "$filename -> $subjid"
+
+	#compile subjid list
+	echo $subjid >> $subjlist
+done
+
+if [ ! -e $subjlist ]
+then
+ echo "no subjects found! exiting.."
+ exit 1
+fi
+
+#sort and remove duplicate entries in subjlist
+sort -u $subjlist -o $subjlist
+
+
+#expression for heudiconv
+dicom_expr=$folder/${search}
+
+#for subj in `cat $subjlist`
+#do
+heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic -s `cat $subjlist`
+#done
+
+cp -Rv $output_dir/.heudiconv $heudiconv_out
+
+$execpath/etc/correctFieldMap $output_dir $subjlist
+$execpath/etc/correctMultiecho $output_dir $subjlist
+$execpath/etc/cleanParticipantsFile $output_dir
+$execpath/etc/bids-validator $output_dir > $validator_out
+
+
+exit 0

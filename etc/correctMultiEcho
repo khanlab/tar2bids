@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if [ "$#" -lt 1 ]
+then
+	echo "Usage: $0 <in_bids> <optional list of subj IDs>"
+	exit 1
+fi 
+in_bids=$1
+
+
+#assumes python script is in same folder as this wrapper -- eventually just replace this..
+exec_path=`dirname $0`
+
+
+
+if [ "$#" -gt 1 ]
+then
+	subjlist=`cat $2`
+		#list of (new) subject IDs to process, where ID is from sub-ID
+else
+	subjlist=`tail -n +2 $in_bids/participants.tsv | awk '{print $1}' `
+fi
+
+
+for subj in $subjlist
+do
+
+	subj=${subj##sub-} #strip off sub- if it exists, to make consistent
+
+	
+	$exec_path/meGRE_bids_corrector.py $in_bids/sub-$subj/anat
+
+	#fix ImagingFrequency by getting from another json file
+	match=`grep ImagingFrequency $in_bids/sub-$subj/anat/*.json | head -n 1`
+	freq=${match##*:\ }
+	freq=${freq%%,*}
+
+	$exec_path/fixImFreq_json.py $in_bids/sub-$subj/anat $freq
+
+
+	$exec_path/memp2rage_bids_corrector.py $in_bids/sub-$subj/anat
+done

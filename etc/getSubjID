@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [ "$#" -lt 2 ]
+then
+	echo "Usage: <expression to find {subject}> <input string/filename>"
+	exit 1
+fi
+
+
+
+subj_expr=$1
+in_name=$2
+
+ beforesubj=${subj_expr%%\{subject\}*}
+ aftersubj=${subj_expr##*\{subject\}}
+
+
+ strippost=${in_name%%$aftersubj}
+ strippre=${strippost##$beforesubj}
+ subjid=$strippre
+
+ if [ ! -n "$subjid" ]
+ then
+       	 echo before_id "$beforesubj"
+	 echo after_id "$aftersubj"
+	 echo strip_before $strippre
+	 echo strip_after $subjid
+
+	echo "ERROR in $0: subjid null"
+	exit 1
+ fi
+
+echo $subjid
+
+
+exit 0
+

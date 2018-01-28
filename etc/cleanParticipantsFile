@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ "$#" -lt 1 ]
+then
+	echo "Usage: $0 <in_bids>"
+	exit 1
+fi 
+
+
+in_bids=$1
+tsv=$in_bids/participants.tsv
+tmp_tsv=$in_bids/participants_new.tsv
+
+#sort it
+sort $tsv  > $tmp_tsv
+
+#remove fourth column (group) since is it not correct
+awk -F '\t' '{OFS="\t"} {print $1,$2,$3}' $tmp_tsv > $tsv
+rm -f $tmp_tsv
