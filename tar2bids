@@ -8,6 +8,7 @@ function usage {
 	echo ""
 	echo " Optional flags (must appear before required arguments):"
 	echo "	-o <output_dir> : default=$output_dir"
+	echo "	-N <num parallel cores> : default=0  (max cores)"
 	echo "	-h <heuristic.py> : default=$heuristic"
 	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
 	echo ""
@@ -26,13 +27,16 @@ heuristic_dir=$execpath/heuristics
 output_dir=./bids
 heuristic=cfmm_bold_rest.py
 heudi_opts=
+ncores=0
 
-while getopts "o:h:O:" options; do
+while getopts "N:o:h:O:" options; do
  case $options in
+    N ) echo "  Overriding number of cores: $OPTARG" >&2
+	ncores=$OPTARG;;
     o ) echo "	Overriding output dir as: $OPTARG" >&2
 	output_dir=`realpath $OPTARG`;;
     h ) echo "	Overriding heuristic file as: $OPTARG" >&2
-	heuristic=`realpath $OPTARG`;;
+	heuristic=$OPTARG;;
     O ) echo "	Using heudiconv options: $OPTARGS"  >&2
 	heudi_opts=$OPTARG;;
 
@@ -43,6 +47,17 @@ done
 
 shift $((OPTIND-1))
 
+if [ -e $heuristic ]
+then
+ heuristic_file=`realpath $heuristic`
+else
+ heuristic_file=$heuristic_dir/$heuristic
+ if [ ! -e $heuristic_file ]
+ then
+   echo $heuristic does not exist!
+   exit 1 
+ fi
+fi
 
 if [ "$#" -lt 2 ]
 then
@@ -52,6 +67,7 @@ fi
 
 search=$1
 shift 1
+
 
 
 output_dir=`realpath $output_dir`
@@ -106,17 +122,15 @@ sort -u $subjlist -o $subjlist
 #expression for heudiconv
 dicom_expr=$folder/${search}
 
-#for subj in `cat $subjlist`
-#do
-heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic -s `cat $subjlist`
-#done
+echo "heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s `cat $subjlist`"
+cat $subjlist | parallel --no-notice --jobs $ncores "heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {}"
 
 cp -Rv $output_dir/.heudiconv $heudiconv_out
 
 $execpath/etc/correctFieldMap $output_dir $subjlist
-$execpath/etc/correctMultiecho $output_dir $subjlist
+$execpath/etc/correctMultiEcho $output_dir $subjlist
 $execpath/etc/cleanParticipantsFile $output_dir
-$execpath/etc/bids-validator $output_dir > $validator_out
+bids-validator $output_dir > $validator_out
 
 
 exit 0

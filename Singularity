@@ -6,7 +6,6 @@ mkdir -p $SINGULARITY_ROOTFS/opt/tar2bids
 cp -Rv . $SINGULARITY_ROOTFS/opt/tar2bids
 
 %post 
-mkdir -p /src
 
 ## Install bids-validator
 apt-get update && \
@@ -16,13 +15,12 @@ apt-get remove -y curl && \
 apt-get install -y nodejs && \
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-git clone http://github.com/khanlab/bids-validator /src
-cd /src
+git clone http://github.com/khanlab/bids-validator /opt/bids-validator
+cd /opt/bids-validator
 TAG=0.25.0
 git checkout $TAG
 sed -i -E "s/0.0.0/$TAG/" package.json
-npm install -g /src
-rm -rf /src
+npm install -g /opt/bids-validator
 
 #install octave
 apt-get update
@@ -31,6 +29,15 @@ apt-get install -y octave
 #add path for octave code
 echo addpath\(genpath\(\'/opt/tar2bids/etc/octave\'\)\)\; >> /etc/octave.conf 
 
+#install gnu parallel 
+apt-get update 
+apt-get install -y parallel
+
+%environment
+
+export LANGUAGE="en_CA:en"
+unset LC_AL
+export LANG="en_CA.UTF-8"
 
 %runscript
 exec /opt/tar2bids/tar2bids $@
