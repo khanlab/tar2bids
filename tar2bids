@@ -38,7 +38,7 @@ while getopts "N:o:h:O:" options; do
     h ) echo "	Overriding heuristic file as: $OPTARG" >&2
 	heuristic=$OPTARG;;
     O ) echo "	Using heudiconv options: $OPTARGS"  >&2
-	heudi_opts=$OPTARG;;
+	heudi_opts="$OPTARG";;
 
     * ) usage
 	exit 1;;
@@ -122,13 +122,16 @@ sort -u $subjlist -o $subjlist
 #expression for heudiconv
 dicom_expr=$folder/${search}
 
-echo "heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s `cat $subjlist`"
-cat $subjlist | parallel --no-notice --jobs $ncores "heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {}"
+#options for GNU parallel
+popts="--no-notice --verbose --jobs $ncores"
+
+cat $subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {}"
 
 cp -Rv $output_dir/.heudiconv $heudiconv_out
 
-$execpath/etc/correctFieldMap $output_dir $subjlist
-$execpath/etc/correctMultiEcho $output_dir $subjlist
+cat $subjlist | parallel $popts "$execpath/etc/correctFieldMap $output_dir {}"
+cat $subjlist | parallel $popts "$execpath/etc/correctMultiEcho $output_dir {}"
+
 $execpath/etc/cleanParticipantsFile $output_dir
 bids-validator $output_dir > $validator_out
 
