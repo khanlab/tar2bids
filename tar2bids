@@ -123,12 +123,26 @@ sort -u $subjlist -o $subjlist
 dicom_expr=$folder/${search}
 
 echo "heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s `cat $subjlist`"
-cat $subjlist | parallel --no-notice --jobs $ncores "heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {}"
+cat $subjlist | parallel --no-notice --jobs $ncores "heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} "
 
 cp -Rv $output_dir/.heudiconv $heudiconv_out
 
+Nfmaps=`ls sub-*/fmap/*phasediffss.nii.gz | wc -l`
+Ngre=`ls sub-*/anat/*GRE?.nii.gz | wc -l`
+Nmemp2rage=`ls sub-*/anat/*MP2RAGE?.nii.gz | wc -l`
+
+
+if [ ! "$Nfmaps" = 0 ]
+then
 $execpath/etc/correctFieldMap $output_dir $subjlist
+fi
+
+if [ ! "$Ngre" = 0 -o ! "$Nmemp2rage" = 0 ]
+then
 $execpath/etc/correctMultiEcho $output_dir $subjlist
+fi
+
+
 $execpath/etc/cleanParticipantsFile $output_dir
 bids-validator $output_dir > $validator_out
 
