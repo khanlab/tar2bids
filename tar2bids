@@ -38,7 +38,7 @@ while getopts "N:o:h:O:" options; do
     h ) echo "	Overriding heuristic file as: $OPTARG" >&2
 	heuristic=$OPTARG;;
     O ) echo "	Using heudiconv options: $OPTARGS"  >&2
-	heudi_opts=$OPTARG;;
+	heudi_opts="$OPTARG";;
 
     * ) usage
 	exit 1;;
@@ -87,6 +87,10 @@ mkdir -p $log_dir
 subjlist=$log_dir/subjects-list.txt
 validator_out=$log_dir/bids-validator.txt
 heudiconv_out=$log_dir/heudiconv
+mkdir $log_dir/logs
+heudi_log=$log_dir/logs/heudiconv
+tuneup_log=$log_dir/logs/tuneup
+
 
 # parse tarfile names to get subjids
 for tar in $@
@@ -122,28 +126,37 @@ sort -u $subjlist -o $subjlist
 #expression for heudiconv
 dicom_expr=$folder/${search}
 
-echo "heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s `cat $subjlist`"
-cat $subjlist | parallel --no-notice --jobs $ncores "heudiconv -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} "
+#options for GNU parallel
+popts="--no-notice --verbose --jobs $ncores"
 
-cp -Rv $output_dir/.heudiconv $heudiconv_out
+cat $subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} | tee $heudi_log.{} "
 
-Nfmaps=`ls sub-*/fmap/*phasediffss.nii.gz | wc -l`
-Ngre=`ls sub-*/anat/*GRE?.nii.gz | wc -l`
-Nmemp2rage=`ls sub-*/anat/*MP2RAGE?.nii.gz | wc -l`
+echo "Copying hidden .heudiconv folder to $heudiconv_out"
+cp -R $output_dir/.heudiconv $heudiconv_out
+
+
+#check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
+Nfmaps=`ls $output_dir/sub-*/fmap/*phasediffss.nii.gz 1>/dev/null 2>&1 | wc -l`
+Ngre=`ls $output_dir/sub-*/anat/*GRE?.nii.gz 1>/dev/null 2>&1 | wc -l`
+Nmemp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE?.nii.gz 1>/dev/null 2>&1 | wc -l`
 
 
 if [ ! "$Nfmaps" = 0 ]
 then
-$execpath/etc/correctFieldMap $output_dir $subjlist
+echo "Running bids correction from phasediff fieldmap data..."
+cat $subjlist | parallel $popts "$execpath/etc/correctFieldMap $output_dir {} | tee -a $tuneup_log.{} " 
 fi
 
 if [ ! "$Ngre" = 0 -o ! "$Nmemp2rage" = 0 ]
 then
-$execpath/etc/correctMultiEcho $output_dir $subjlist
+echo "Running bids correction from multi-echo GRE and MP2RAGE fieldmap data..."
+cat $subjlist | parallel $popts "$execpath/etc/correctMultiEcho $output_dir {} | tee -a $tuneup_log.{}"
 fi
 
-
+echo "Cleaning participants file (sorting, removing extra columns)..."
 $execpath/etc/cleanParticipantsFile $output_dir
+
+echo "Running bids-validator..."
 bids-validator $output_dir > $validator_out
 
 
