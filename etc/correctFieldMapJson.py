@@ -7,6 +7,7 @@ import os
 import sys
 import json
 import glob
+import collections
 
 def correctFieldMapJson(bids_dir,sub,ses=None):
     
@@ -30,7 +31,7 @@ def correctFieldMapJson(bids_dir,sub,ses=None):
 
     #load json files
     with open(phasediff_json_file, 'r') as f:
-        phasediff_json = json.load(f)
+        phasediff_json = json.load(f,object_pairs_hook=collections.OrderedDict)
 
     with open(mag1_json_file, 'r') as f:
         mag1_json = json.load(f)
