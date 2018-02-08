@@ -21,6 +21,7 @@ for subj in $subjlist
 do
 
 	subj=${subj##sub-} #strip off sub- if it exists, to make consistent
-	octave --eval "correctFieldMapJson('$in_bids','sub-$subj')"
+	correctFieldMapJson.py $in_bids sub-$subj
+
 
 done
