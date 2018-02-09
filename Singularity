@@ -22,20 +22,25 @@ git checkout $TAG
 sed -i -E "s/0.0.0/$TAG/" package.json
 npm install -g /opt/bids-validator
 
-#install octave
-apt-get update
-apt-get install -y octave
-
-#add path for octave code
-echo addpath\(genpath\(\'/opt/tar2bids/etc/octave\'\)\)\; >> /etc/octave.conf 
 
 #install gnu parallel 
 apt-get update 
 apt-get install -y parallel 
 
+
+#need the below to avoid warnings when running gnu-parallel
+apt-get install -y locales
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "LC_ALL=en_US.UTF-8" >> /etc/locale.conf
+locale-gen en_US.UTF-8
+
+
+%environment
 export LANGUAGE="en_US.UTF-8"
-echo 'LANGUAGE="en_US.UTF-8"' >> /etc/default/locale
-echo 'LC_ALL="en_US.UTF-8"' >> /etc/default/locale
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+
 
 %runscript
 exec /opt/tar2bids/tar2bids $@
