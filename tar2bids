@@ -4,9 +4,11 @@
 function usage {
 
 	echo "Runs dicom tarball(s) to BIDS conversion using heudiconv"
-	echo "Usage $0  <optional flags>  '<{subject} search string>'  <in tar file(s)>"
+	echo "Usage $0  <optional flags>   <in tar file(s)>"
 	echo ""
 	echo " Optional flags (must appear before required arguments):"
+	echo "	-P <patient name search string> :  default:  $patientname_search "
+	echo "	-T <tar name search string> :  uses tarfile name instead of PatientName to search, e.g. '{subject}' if <subject>.tar" 
 	echo "	-o <output_dir> : default=$output_dir"
 	echo "	-N <num parallel cores> : default=0  (max cores)"
 	echo "	-h <heuristic.py> : default=$heuristic"
@@ -27,9 +29,11 @@ heuristic_dir=$execpath/heuristics
 output_dir=./bids
 heuristic=cfmm_bold_rest.py
 heudi_opts=
+patientname_search='*_{subject}'
+tarfile_search=
 ncores=0
 
-while getopts "N:o:h:O:" options; do
+while getopts "N:o:h:O:P:T:" options; do
  case $options in
     N ) echo "  Overriding number of cores: $OPTARG" >&2
 	ncores=$OPTARG;;
@@ -39,8 +43,12 @@ while getopts "N:o:h:O:" options; do
 	heuristic=$OPTARG;;
     O ) echo "	Using heudiconv options: $OPTARGS"  >&2
 	heudi_opts="$OPTARG";;
+    P ) echo "  Using custom PatientName search: $OPTARGS" >&2
+	patientname_search="$OPTARG";;
+    T ) echo "  Using custom tarfile name search: $OPTARGS" >&2
+	tarfile_search="$OPTARG";;
 
-    * ) usage
+   * ) usage
 	exit 1;;
  esac
 done
@@ -59,15 +67,11 @@ else
  fi
 fi
 
-if [ "$#" -lt 2 ]
+if [ "$#" -lt 1 ]
 then
   usage;
   exit 1;
 fi
-
-search=$1
-shift 1
-
 
 
 output_dir=`realpath $output_dir`
@@ -98,8 +102,32 @@ do
 	filename=${tar##*/}
 
 	folder=`realpath $(dirname $tar)`
+	
+	#default, search for subjid in PatientName
+	if [ ! -n "$tarfile_search" ]
+	then
 
-	subjid=`$execpath/etc/getSubjID $search $filename`
+	pi=`echo $filename | awk  -F '_' '{print $1}'`
+	pi_study=${filename%%_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*}
+	study=${pi_study##${pi}_}
+	date_etc=${filename##${pi}_${study}_}
+	date=${date_etc%%_*}
+
+	patient_etc=${date_etc##${date}_}
+	patient=${patient_etc%_[0-9]*.*}
+
+	echo pi $pi study $study date $date patient $patient
+	echo "$execpath/etc/getSubjID $patientname_search $patient "
+	subjid=`$execpath/etc/getSubjID $patientname_search $patient`
+	echo "subjid=$subjid"
+
+	search="${pi}_${study}_${date}_${patientname_search}_[0-9]*.*.tar"	
+	else
+	#if -s specified, then search in tarfile
+	subjid=`$execpath/etc/getSubjID $tarfile_search ${filename%.tar}`
+   	search=${tarfile_search}.tar
+	fi
+	
 	if [ ! $? = 0 ]
 	then
 		echo ERROR in $0: no matching subjid in tar: $tar
@@ -132,8 +160,8 @@ popts="--no-notice --verbose --jobs $ncores"
 echo "Running: heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file"
 cat $subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} > tee $heudi_log.{} "
 
-echo "Copying hidden .heudiconv folder to $heudiconv_out"
-cp -R $output_dir/.heudiconv $heudiconv_out
+echo "Moving hidden .heudiconv folder to $heudiconv_out"
+mv $output_dir/.heudiconv $heudiconv_out
 
 
 #check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
