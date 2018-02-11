@@ -99,6 +99,12 @@ tuneup_log=$log_dir/logs/tuneup
 # parse tarfile names to get subjids
 for tar in $@
 do
+
+    if [ ! -e $tar ]
+    then
+        echo "Tarfile: $tar does not exist!"
+        exit 1
+    fi
 	filename=${tar##*/}
 
 	folder=`realpath $(dirname $tar)`
@@ -121,11 +127,11 @@ do
 	subjid=`$execpath/etc/getSubjID $patientname_search $patient`
 	echo "subjid=$subjid"
 
-	search="${pi}_${study}_${date}_${patientname_search}_[0-9]*.*.tar"	
+	search="${pi}_${study}_${date}_${patientname_search}_[0-9]*.*.t*"
 	else
 	#if -s specified, then search in tarfile
-	subjid=`$execpath/etc/getSubjID $tarfile_search ${filename%.tar}`
-   	search=${tarfile_search}.tar
+	subjid=`$execpath/etc/getSubjID $tarfile_search ${filename%.t*}`
+    search="${tarfile_search}.t*"
 	fi
 	
 	if [ ! $? = 0 ]
@@ -155,19 +161,19 @@ sort -u $subjlist -o $subjlist
 dicom_expr=$folder/${search}
 
 #options for GNU parallel
-popts="--no-notice --verbose --jobs $ncores"
+popts="--no-notice --verbose --jobs $ncores -u"
 
 echo "Running: heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file"
-cat $subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} > tee $heudi_log.{} "
+cat $subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} | tee $heudi_log.{} "
 
 echo "Moving hidden .heudiconv folder to $heudiconv_out"
 mv $output_dir/.heudiconv $heudiconv_out
 
 
 #check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
-Nfmaps=`ls $output_dir/sub-*/fmap/*phasediffss.nii.gz 1>/dev/null 2>&1 | wc -l`
-Ngre=`ls $output_dir/sub-*/anat/*GRE?.nii.gz 1>/dev/null 2>&1 | wc -l`
-Nmemp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE?.nii.gz 1>/dev/null 2>&1 | wc -l`
+Nfmaps=`ls $output_dir/sub-*/fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
+Ngre=`ls $output_dir/sub-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
+Nmemp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
 
 
 if [ ! "$Nfmaps" = 0 ]

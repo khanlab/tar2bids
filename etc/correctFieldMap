@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 1 ]
 then
-	echo "Usage: $0 <in_bids> <optional list of subj IDs>"
+    echo "Usage: $0 <in_bids> <subj IDs .. (optional)>"
 	exit 1
 fi 
 in_bids=$1
@@ -12,7 +12,8 @@ exec_path=`dirname $0`
 
 if [ "$#" -gt 1 ]
 then
-	subjlist=`cat $2`
+    shift 1
+	subjlist=$@
 		#list of (new) subject IDs to process, where ID is from sub-ID
 else
 	subjlist=`tail -n +2 $in_bids/participants.tsv | awk '{print $1}' `
