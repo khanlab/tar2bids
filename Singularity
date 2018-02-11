@@ -1,6 +1,7 @@
 Bootstrap: shub
 From: khanlab/heudiconv:0.4.3
 
+
 %setup
 mkdir -p $SINGULARITY_ROOTFS/opt/tar2bids
 cp -Rv . $SINGULARITY_ROOTFS/opt/tar2bids
@@ -15,9 +16,9 @@ apt-get remove -y curl && \
 apt-get install -y nodejs && \
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-git clone http://github.com/khanlab/bids-validator /opt/bids-validator
+git clone http://github.com/INCF/bids-validator /opt/bids-validator
 cd /opt/bids-validator
-TAG=0.25.0
+TAG=0.25.7
 git checkout $TAG
 sed -i -E "s/0.0.0/$TAG/" package.json
 npm install -g /opt/bids-validator
