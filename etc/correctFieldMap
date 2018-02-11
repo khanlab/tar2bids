@@ -7,6 +7,9 @@ then
 fi 
 in_bids=$1
 
+exec_path=`dirname $0`
+
+
 if [ "$#" -gt 1 ]
 then
 	subjlist=`cat $2`
@@ -21,7 +24,7 @@ for subj in $subjlist
 do
 
 	subj=${subj##sub-} #strip off sub- if it exists, to make consistent
-	correctFieldMapJson.py $in_bids sub-$subj
+	$exec_path/correctFieldMapJson.py $in_bids sub-$subj
 
 
 done

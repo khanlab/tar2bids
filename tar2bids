@@ -129,7 +129,8 @@ dicom_expr=$folder/${search}
 #options for GNU parallel
 popts="--no-notice --verbose --jobs $ncores"
 
-cat $subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} | tee $heudi_log.{} "
+echo "Running: heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file"
+cat $subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} > tee $heudi_log.{} "
 
 echo "Copying hidden .heudiconv folder to $heudiconv_out"
 cp -R $output_dir/.heudiconv $heudiconv_out

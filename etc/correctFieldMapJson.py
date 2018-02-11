@@ -48,7 +48,10 @@ def correctFieldMapJson(bids_dir,sub,ses=None):
     # print phasediff_json['EchoTime2']
 
     # apply to all bold images
-    all_bold = glob.glob(os.path.join(bids_dir,sub_prefix,'func','{}_*_bold.nii.gz'.format(sub_prefix)))
+    cwd=os.getcwd()
+    os.chdir(bids_dir)
+    all_bold = glob.glob(os.path.join(sub_prefix,'func','{}_*_bold.nii.gz'.format(sub_prefix)))
+    os.chdir(cwd)
     phasediff_json["IntendedFor"]=all_bold
 
     #debug
