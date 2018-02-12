@@ -21,8 +21,8 @@ def infotodict(seqinfo):
     rest = create_key('sub-{subject}/func/sub-{subject}_task-rest_run-{item:02d}_bold')
     rest_sbref = create_key('sub-{subject}/func/sub-{subject}_task-rest_run-{item:02d}_sbref')
 
-    rest_psf = create_key('sub-{subject}/func/sub-{subject}_acq-psf_task-rest_run-{item:02d}_bold')
-    rest_psf_dico = create_key('sub-{subject}/func/sub-{subject}_acq-psf_task-rest_run-{item:02d}_rec-dico_bold')
+    rest_psf = create_key('sub-{subject}/func/sub-{subject}_task-rest_acq-psf_run-{item:02d}_bold')
+    rest_psf_dico = create_key('sub-{subject}/func/sub-{subject}_task-rest_acq-psf_rec-dico_run-{item:02d}_bold')
 
     movie = create_key('sub-{subject}/func/sub-{subject}_task-movie_run-{item:02d}_bold')
     movie_sbref = create_key('sub-{subject}/func/sub-{subject}_task-movie_run-{item:02d}_sbref')
@@ -51,6 +51,7 @@ def infotodict(seqinfo):
     semagacq=[]
     phaseacq=[]
     for idx, s in enumerate(seqinfo):
+
         if ('bold' in s.protocol_name):
             if ('se' in (s.sequence_name).strip()):
                 if (s.dim4==102):
@@ -80,7 +81,7 @@ def infotodict(seqinfo):
     # Now we have all the sequences in the right bins we need to link up the magnitudes and phases from the GE to ensure the runs match
     # find the unique magnitude runs and sort by start times
     magtimes = list(sorted(set(magacq)))
-    semagtimes = list(sorted(set(magacq)))
+    semagtimes = list(sorted(set(semagacq)))
 
     # find the pairs of indicies corresponding to the same run
     magind =[None]*len(magtimes)
@@ -101,6 +102,7 @@ def infotodict(seqinfo):
     info[task_ge_phase]=[]
 
     for i in xrange(len(semagtimes)):
+        print(i)
         info[task_se].append(seinfo[i])
         info[task_se][i]['run']=str(i+1).zfill(2)
 
