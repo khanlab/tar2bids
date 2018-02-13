@@ -16,6 +16,7 @@ function usage {
 	echo "	-o <output_dir> : default=$output_dir"
 	echo "	-N <num parallel cores> : default=0  (max cores)"
 	echo "	-h <heuristic.py> : default=$heuristic"
+    echo "  -w <tempdir>  (--tempdir in heudiconv)" 
 	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
 	echo ""
 	echo " Available heuristic files:"
@@ -36,8 +37,9 @@ heudi_opts=
 patientname_search='*_{subject}'
 tarfile_search=
 ncores=0
+tempdir=
 
-while getopts "N:o:h:O:P:T:" options; do
+while getopts "N:o:h:O:P:T:w:" options; do
  case $options in
     N ) echo "  Overriding number of cores: $OPTARG" >&2
 	ncores=$OPTARG;;
@@ -45,13 +47,14 @@ while getopts "N:o:h:O:P:T:" options; do
 	output_dir=`realpath $OPTARG`;;
     h ) echo "	Overriding heuristic file as: $OPTARG" >&2
 	heuristic=$OPTARG;;
-    O ) echo "	Using heudiconv options: $OPTARGS"  >&2
+    O ) echo "	Using heudiconv options: $OPTARG"  >&2
 	heudi_opts="$OPTARG";;
-    P ) echo "  Using custom PatientName search: $OPTARGS" >&2
+    P ) echo "  Using custom PatientName search: $OPTARG" >&2
 	patientname_search="$OPTARG";;
-    T ) echo "  Using custom tarfile name search: $OPTARGS" >&2
+    T ) echo "  Using custom tarfile name search: $OPTARG" >&2
 	tarfile_search="$OPTARG";;
-
+    w ) echo "  Using --tempdir=$OPTARG" >&2
+    tempdir=$OPTARG;;
    * ) usage
 	exit 1;;
  esac
@@ -163,6 +166,11 @@ dicom_expr=$folder/${search}
 
 #options for GNU parallel
 popts="--no-notice --verbose --jobs $ncores -u"
+
+if [ -n "$tempdir" ]
+then
+    heudi_opts="$heudi_opts --tempdir $tempdir"
+fi
 
 echo "  Running: heudiconv ... "
 cat $subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} | tee $heudi_log.{} "
