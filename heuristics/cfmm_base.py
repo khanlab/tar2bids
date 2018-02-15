@@ -261,7 +261,7 @@ def infotodict(seqinfo):
 
 
 		#mp2rage
-        if ('mp2rage' in s.series_description):
+        if ('mp2rage' in s.series_description  and (not 'memp2rage' in s.series_description ) ):
     			if ('INV1' in (s.series_description).strip()):
                                 if ('DIS2D' in (s.image_type[3].strip())):
     		    		    info[DIS2D_inv1_mp2rage].append({'item': s.series_id})
