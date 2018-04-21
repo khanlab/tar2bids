@@ -132,10 +132,18 @@ do
 	echo "  PI=$pi Study=$study Date=$date PatientName=$patient"
 	search="${pi}_${study}_${date}_${patientname_search}_[0-9]*.*.t*"
 	subjid=`$execpath/etc/getSubjID $patientname_search $patient`
+    
+    #expression for heudiconv
+    dicom_expr=$folder/${pi}_${study}_????????_${patientname_search}_?.????????.t*
+
 	else
 	#if -s specified, then search in tarfile
     search="${tarfile_search}.t*"
 	subjid=`$execpath/etc/getSubjID $tarfile_search ${filename%.t*}`
+    
+    #expression for heudiconv
+    dicom_expr=$folder/${tarfile_search}.t*
+
 	fi
 	
 	if [ ! $? = 0 ]
@@ -160,9 +168,6 @@ fi
 #sort and remove duplicate entries in subjlist
 sort -u $subjlist -o $subjlist
 
-
-#expression for heudiconv
-dicom_expr=$folder/${search}
 
 #options for GNU parallel
 popts="--no-notice --verbose --jobs $ncores -u"
