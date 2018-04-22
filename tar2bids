@@ -18,6 +18,7 @@ function usage {
 	echo "	-h <heuristic.py> : default=$heuristic"
     echo "  -w <tempdir>  (--tempdir in heudiconv)" 
 	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
+    echo "  -C : copy tarfiles to BIDS sourcedata folder" 
 	echo ""
 	echo " Available heuristic files:"
 	for h in `ls ${heuristic_dir}/*.py`
@@ -38,8 +39,9 @@ patientname_search='*_{subject}'
 tarfile_search=
 ncores=0
 tempdir=
+copytar=0
 
-while getopts "N:o:h:O:P:T:w:" options; do
+while getopts "N:o:h:O:P:T:w:C" options; do
  case $options in
     N ) echo "  Overriding number of cores: $OPTARG" >&2
 	ncores=$OPTARG;;
@@ -55,6 +57,8 @@ while getopts "N:o:h:O:P:T:w:" options; do
 	tarfile_search="$OPTARG";;
     w ) echo "  Using --tempdir=$OPTARG" >&2
     tempdir=$OPTARG;;
+    C ) echo "  Copying source tarfiles to sourcedata" >&2
+    copytar=1;;
    * ) usage
 	exit 1;;
  esac
@@ -112,6 +116,12 @@ do
         echo "  ERROR in $0: tar file $tar does not exist!"
         exit 1
     fi
+
+    if [ "$copy_tar" = "1" ]
+    then
+        cp -v $tar $sourcedata
+    fi
+
 	filename=${tar##*/}
 
 	folder=`realpath $(dirname $tar)`
