@@ -17,7 +17,7 @@ function usage {
 	echo "	-N <num parallel cores> : default=0  (max cores)"
 	echo "	-h <heuristic.py> : default=$heuristic"
     echo "  -w <tempdir>  (--tempdir in heudiconv)" 
-	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
+	echo "  -O \"<additional heudiconv options>\" : default=$heudi_opts"
     echo "  -C : copy tarfiles to BIDS sourcedata folder" 
 	echo ""
 	echo " Available heuristic files:"
@@ -59,6 +59,7 @@ while getopts "N:o:h:O:P:T:w:C" options; do
     tempdir=$OPTARG;;
     C ) echo "  Copying source tarfiles to sourcedata" >&2
     copytar=1;;
+
    * ) usage
 	exit 1;;
  esac
@@ -117,7 +118,7 @@ do
         exit 1
     fi
 
-    if [ "$copy_tar" = "1" ]
+    if [ "$copytar" = "1" ]
     then
         cp -v $tar $sourcedata
     fi
