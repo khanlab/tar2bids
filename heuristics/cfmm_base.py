@@ -166,13 +166,13 @@ def infotodict(seqinfo):
     DIS2D_dir_t2 = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-DIR_rec-DIS2D_T2w')
 
     #MT-on and MT-off GRE (magnetization transfer)
-    mag_MT_on_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MTon_GRE')
-    DIS2D_mag_MT_on_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MTon_rec-DIS2D_GRE')
-    DIS3D_mag_MT_on_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MTon_rec-DIS3D_GRE')
+    mag_MT_on_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MTon_run-{item:02d}_GRE')
+    DIS2D_mag_MT_on_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MTon_rec-DIS2D_run-{item:02d}_GRE')
+    DIS3D_mag_MT_on_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MTon_rec-DIS3D_run-{item:02d}_GRE')
     
-    mag_MT_off_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MToff_GRE')
-    DIS2D_mag_MT_off_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MToff_rec-DIS2D_GRE')
-    DIS3D_mag_MT_off_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MToff_rec-DIS3D_GRE')
+    mag_MT_off_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MToff_run-{item:02d}_GRE')
+    DIS2D_mag_MT_off_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MToff_rec-DIS2D_run-{item:02d}_GRE')
+    DIS3D_mag_MT_off_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MToff_rec-DIS3D_run-{item:02d}_GRE')
 
 
     info = { t1w_mprage:[], 
