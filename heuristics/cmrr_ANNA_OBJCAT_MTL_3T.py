@@ -17,8 +17,8 @@ def infotodict(seqinfo):
     # call cfmm for general labelling and get dictionary
     info = cfmminfodict(seqinfo)
 
-    ContRecog = create_key('sub-{subject}/func/sub-{subject}_task-nback_run-{item:02d}_bold')
-    ContRecog_sbref = create_key('sub-{subject}/func/sub-{subject}_task-nback_run-{item:02d}_sbref')
+    ContRecog = create_key('sub-{subject}/func/sub-{subject}_task-ContRecog_run-{item:02d}_bold')
+    ContRecog_sbref = create_key('sub-{subject}/func/sub-{subject}_task-ContRecog_run-{item:02d}_sbref')
 
 
     info[ContRecog]=[]
