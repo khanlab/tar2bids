@@ -28,13 +28,11 @@ def infotodict(seqinfo):
     for idx, s in enumerate(seqinfo):
  
         #func continuous recognition memory task
-
-
-    if ('cmrr_ep' in s.protocol_name and !('test' in s.protocol_name)):
-        if (s.dim4==1 and  'SBRef' in (s.series_description).strip()):
-            info[ContRecog_sbref].append({'item': s.series_id})
-        elif (s.dim4>1):
-            info[ContRecog].append({'item': s.series_id})
+    	if ('cmrr_ep' in s.protocol_name and 'test' not in s.protocol_name):
+	    if (s.dim4==1 and  'SBRef' in (s.series_description).strip()):
+            	info[ContRecog_sbref].append({'item': s.series_id})
+	    elif (s.dim4>1):
+            	info[ContRecog].append({'item': s.series_id})
 
 
     return info
