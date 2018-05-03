@@ -13,7 +13,7 @@ Usage tar2bids  <optional flags>   <in tar file(s)>
 	-o <output_dir> : default=./bids
 	-N <num parallel cores> : default=0  (max cores)
 	-h <heuristic.py> : default=cfmm_bold_rest.py
-  -w <tempdir>  (--tempdir in heudiconv)
+	-w <tempdir>  (--tempdir in heudiconv)
 	-O "<additional heudiconv options>" : default=
 
  Available heuristic files:

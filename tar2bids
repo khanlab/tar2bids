@@ -16,9 +16,9 @@ function usage {
 	echo "	-o <output_dir> : default=$output_dir"
 	echo "	-N <num parallel cores> : default=0  (max cores)"
 	echo "	-h <heuristic.py> : default=$heuristic"
-    echo "  -w <tempdir>  (--tempdir in heudiconv)" 
-	echo "  -O \"<additional heudiconv options>\" : default=$heudi_opts"
-    echo "  -C : copy tarfiles to BIDS sourcedata folder" 
+	echo "	-w <tempdir>  (--tempdir in heudiconv)" 
+	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
+	echo "	-C : copy tarfiles to BIDS sourcedata folder" 
 	echo ""
 	echo " Available heuristic files:"
 	for h in `ls ${heuristic_dir}/*.py`
