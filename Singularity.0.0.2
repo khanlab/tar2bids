@@ -1,6 +1,7 @@
 Bootstrap: shub
 From: khanlab/heudiconv:0.4.3
 
+
 %setup
 mkdir -p $SINGULARITY_ROOTFS/opt/tar2bids
 cp -Rv . $SINGULARITY_ROOTFS/opt/tar2bids

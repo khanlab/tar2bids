@@ -106,7 +106,8 @@ heudiconv_out=$log_dir/heudiconv
 mkdir $log_dir/logs
 heudi_log=$log_dir/logs/heudiconv
 tuneup_log=$log_dir/logs/tuneup
-heudiconv_subjlist=$heudiconv_out/subj_sess_args.txt
+heudiconv_subjlist=$log_dir/subj_args.txt
+heudiconv_sesslist=$log_dir/sess_args.txt
 
 
 # parse tarfile names to get subjids
@@ -177,9 +178,11 @@ do
 	#compile subjid list
 	if [ -n "$sessid" ]
 	then
-	echo "-s $subjid -ss $sessid" >> $heudiconv_subjlist
+		echo "$subjid" >> $heudiconv_subjlist
+		echo "$sessid" >> $heudiconv_sesslist
+#	echo "-s $subjid -ss $sessid" >> $heudiconv_subjlist
 	else
-	echo "-s $subjid" >> $heudiconv_subjlist
+		echo "$subjid" >> $heudiconv_subjlist
 	fi
 	echo $subjid >> $subjlist
 
@@ -205,7 +208,34 @@ then
 fi
 
 echo "  Running: heudiconv ... "
-cat $heudiconv_subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} | tee $heudi_log.{} "
+
+
+if [ -n "$sessid" ]
+then
+
+
+parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {1} -ss {2} | tee $heudi_log.{1}.{2} "
+
+else
+
+parallel -a $heudiconv_subjlist  $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {1}  | tee $heudi_log.{1}"
+
+fi
+
+
+if [ -n "$sessid" ]
+then
+
+#update dicominfo.tsv with header line
+for tsv in `ls $output_dir/.heudiconv/*/*/info/dicominfo.tsv`
+do
+ tsv_new=$tsv.new 
+ cat $execpath/etc/dicominfo_hdr.tsv > $tsv_new
+ cat $tsv >> $tsv_new
+ mv $tsv_new $tsv
+done
+
+else
 
 #update dicominfo.tsv with header line
 for tsv in `ls $output_dir/.heudiconv/*/info/dicominfo.tsv`
@@ -215,6 +245,7 @@ do
  cat $tsv >> $tsv_new
  mv $tsv_new $tsv
 done
+fi
 
 echo "  Moving hidden .heudiconv folder to $heudiconv_out"
 mv $output_dir/.heudiconv $heudiconv_out
@@ -223,7 +254,7 @@ mv $output_dir/.heudiconv $heudiconv_out
 if [ -n "$sessid" ]
 then
 #check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
-Nfmaps=`ls $output_dir/sub-*/ses-*fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
+Nfmaps=`ls $output_dir/sub-*/ses-*/fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
 Ngre=`ls $output_dir/sub-*/ses-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/ses-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
 else
