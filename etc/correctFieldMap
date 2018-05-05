@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 1 ]
 then
-    echo "Usage: $0 <in_bids> <subj IDs .. (optional)>"
+    echo "Usage: $0 <in_bids> <subj ID> <session id (optional)>"
 	exit 1
 fi 
 in_bids=$1
@@ -10,22 +10,20 @@ in_bids=$1
 exec_path=`dirname $0`
 
 
+subj=$1
+	subj=${subj##sub-} #strip off sub- if it exists, to make consistent
 if [ "$#" -gt 1 ]
 then
-    shift 1
-	subjlist=$@
-		#list of (new) subject IDs to process, where ID is from sub-ID
-else
-	subjlist=`tail -n +2 $in_bids/participants.tsv | awk '{print $1}' `
+    ses=$2
+	ses=${ses##ses-} #strip off sub- if it exists, to make consistent
 fi
+ 
 #correct field map json files
 
-
-for subj in $subjlist
-do
-
-	subj=${subj##sub-} #strip off sub- if it exists, to make consistent
+if [ -n "$ses" ]
+then
+	$exec_path/correctFieldMapJson.py $in_bids sub-$subj ses-$ses
+else
 	$exec_path/correctFieldMapJson.py $in_bids sub-$subj
+fi
 
-
-done

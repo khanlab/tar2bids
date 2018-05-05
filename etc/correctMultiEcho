@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 1 ]
 then
-    echo "Usage: $0 <in_bids> <subj IDs .. (optional)>"
+    echo "Usage: $0 <in_bids> <subj ID> <session id (optional)>"
 	exit 1
 fi 
 in_bids=$1
@@ -11,33 +11,32 @@ in_bids=$1
 #assumes python script is in same folder as this wrapper -- eventually just replace this..
 exec_path=`dirname $0`
 
-
+subj=$1
+subj=${subj##sub-} #strip off sub- if it exists, to make consistent
 
 if [ "$#" -gt 1 ]
 then
-    shift 1
-	subjlist=$@
-		#list of (new) subject IDs to process, where ID is from sub-ID
-else
-	subjlist=`tail -n +2 $in_bids/participants.tsv | awk '{print $1}' `
+    ses=$2
+	ses=${ses##ses-} #strip off sub- if it exists, to make consistent
 fi
+ 
 
 
-for subj in $subjlist
-do
+	if [ -n "$ses" ]
+    then
+        out_folder=sub-$subj/ses-$ses
+    else
+        out_folder=sub-$subj
+    fi
 
-	subj=${subj##sub-} #strip off sub- if it exists, to make consistent
-
-	
-	$exec_path/meGRE_bids_corrector.py $in_bids/sub-$subj/anat
+	$exec_path/meGRE_bids_corrector.py $in_bids/$out_folder/anat
 
 	#fix ImagingFrequency by getting from another json file
-	match=`grep ImagingFrequency $in_bids/sub-$subj/anat/*.json | head -n 1`
+	match=`grep ImagingFrequency $in_bids/$out_folder/anat/*.json | head -n 1`
 	freq=${match##*:\ }
 	freq=${freq%%,*}
 
-	$exec_path/fixImFreq_json.py $in_bids/sub-$subj/anat $freq
+	$exec_path/fixImFreq_json.py $in_bids/$out_folder/anat $freq
 
 
-	$exec_path/memp2rage_bids_corrector.py $in_bids/sub-$subj/anat
-done
+	$exec_path/memp2rage_bids_corrector.py $in_bids/$out_folder/anat

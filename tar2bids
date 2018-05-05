@@ -106,6 +106,7 @@ heudiconv_out=$log_dir/heudiconv
 mkdir $log_dir/logs
 heudi_log=$log_dir/logs/heudiconv
 tuneup_log=$log_dir/logs/tuneup
+heudiconv_subjlist=$heudiconv_out/subj_sess_args.txt
 
 
 # parse tarfile names to get subjids
@@ -142,7 +143,8 @@ do
 
 	echo "  PI=$pi Study=$study Date=$date PatientName=$patient"
 	search="${pi}_${study}_${date}_${patientname_search}_[0-9]*.*.t*"
-	subjid=`$execpath/etc/getSubjID $patientname_search $patient`
+	subjid=`$execpath/etc/getSubjSessID $patientname_search subject $patient`
+	sessid=`$execpath/etc/getSubjSessID $patientname_search session $patient`
     
     #expression for heudiconv
     dicom_expr=$folder/${pi}_${study}_????????_${patientname_search}_?.????????.t*
@@ -150,7 +152,8 @@ do
 	else
 	#if -s specified, then search in tarfile
     search="${tarfile_search}.t*"
-	subjid=`$execpath/etc/getSubjID $tarfile_search ${filename%.t*}`
+	subjid=`$execpath/etc/getSubjSessID $tarfile_search subject ${filename%.t*}`
+	sessid=`$execpath/etc/getSubjSessID $tarfile_search session ${filename%.t*}`
     
     #expression for heudiconv
     dicom_expr=$folder/${tarfile_search}.t*
@@ -164,10 +167,22 @@ do
 		exit 1
 	fi
 
-	echo "$filename -> $subjid"
+	if [ -n "$sessid" ]
+	then
+	echo "$filename -> sub-$subjid , ses-$sessid"
+	else
+	echo "$filename -> sub-$subjid"
+	fi
 
 	#compile subjid list
+	if [ -n "$sessid" ]
+	then
+	echo "-s $subjid -ss $sessid" >> $heudiconv_subjlist
+	else
+	echo "-s $subjid" >> $heudiconv_subjlist
+	fi
 	echo $subjid >> $subjlist
+
 done
 
 if [ ! -e $subjlist ]
@@ -177,6 +192,7 @@ then
 fi
 
 #sort and remove duplicate entries in subjlist
+sort -u $heudiconv_subjlist -o $heudiconv_subjlist
 sort -u $subjlist -o $subjlist
 
 
@@ -189,16 +205,33 @@ then
 fi
 
 echo "  Running: heudiconv ... "
-cat $subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} | tee $heudi_log.{} "
+cat $heudiconv_subjlist | parallel $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {} | tee $heudi_log.{} "
+
+#update dicominfo.tsv with header line
+for tsv in `ls $output_dir/.heudiconv/*/info/dicominfo.tsv`
+do
+ tsv_new=$tsv.new 
+ cat $execpath/etc/dicominfo_hdr.tsv > $tsv_new
+ cat $tsv >> $tsv_new
+ mv $tsv_new $tsv
+done
 
 echo "  Moving hidden .heudiconv folder to $heudiconv_out"
 mv $output_dir/.heudiconv $heudiconv_out
 
 
+if [ -n "$sessid" ]
+then
+#check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
+Nfmaps=`ls $output_dir/sub-*/ses-*fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
+Ngre=`ls $output_dir/sub-*/ses-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
+Nmemp2rage=`ls $output_dir/sub-*/ses-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
+else
 #check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
 Nfmaps=`ls $output_dir/sub-*/fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
 Ngre=`ls $output_dir/sub-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
+fi
 
 
 if [ ! "$Nfmaps" = 0 ]

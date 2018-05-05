@@ -1,0 +1,71 @@
+#!/bin/bash
+
+if [ "$#" -lt 3 ]
+then
+	echo "Usage: <expression that includes {subject} (and optionally {session})> <tagname to search for (i.e. subject or session)> <input string/filename>"
+	exit 1
+fi
+
+
+
+subj_expr=$1
+searchtag=$2
+in_name=$3
+
+result=
+
+	before=${subj_expr%%\{*}
+	between=${subj_expr#*\}}
+	between=${between%%\{*}
+	after=${subj_expr##*\}}
+
+	if [ "$between" = "$after" ]
+	then
+		#only one tagname, get it
+		tag1=${subj_expr#$before\{}
+		tag1=${tag1%%\}*}
+		
+		if [ "$tag1" = "$searchtag" ]
+		then
+			result=${in_name#$before}
+			result=${result%$after}
+		else
+			echo "$searchtag not found in $subj_expr" >&2
+			exit 1
+		fi
+
+	else
+		#echo "multiple tags"
+		tag1=${subj_expr#$before\{}
+		tag1=${tag1%%\}*}
+
+		tag2=${subj_expr#$before\{$tag1\}$between\{}
+		tag2=${tag2%%\}*}
+		#echo tag1: $tag1
+		#echo tag2: $tag2
+
+		if [ "$tag1" = "$searchtag" ]
+		then
+			result=${in_name#$before}
+			result=${result%%$between*}
+
+		elif [ "$tag2" = "$searchtag" ]
+		then
+			result=${in_name##*$between}
+			result=${result%$after}
+		else
+			echo "$searchtag not found in $subj_expr" >&2
+			exit 1
+		fi
+
+			
+	fi
+
+	if [ -n "$result" ]
+	then
+		echo $result
+	fi
+
+exit 0
+
+
