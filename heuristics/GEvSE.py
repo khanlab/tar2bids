@@ -1,7 +1,7 @@
 import os
 import numpy
-from cfmm import infotodict as cfmminfodict
-from cfmm import create_key
+from cfmm_base import infotodict as cfmminfodict
+from cfmm_base import create_key
 
 def infotodict(seqinfo):
     """Heuristic evaluator for determining which runs belong where
@@ -17,27 +17,11 @@ def infotodict(seqinfo):
     # call cfmm for general labelling and get dictionary
     info = cfmminfodict(seqinfo)
 
-    # delete all functional keys from cfmm
-    rest = create_key('sub-{subject}/func/sub-{subject}_task-rest_run-{item:02d}_bold')
-    rest_sbref = create_key('sub-{subject}/func/sub-{subject}_task-rest_run-{item:02d}_sbref')
-
-    rest_psf = create_key('sub-{subject}/func/sub-{subject}_task-rest_acq-psf_run-{item:02d}_bold')
-    rest_psf_dico = create_key('sub-{subject}/func/sub-{subject}_task-rest_acq-psf_rec-dico_run-{item:02d}_bold')
-
-    movie = create_key('sub-{subject}/func/sub-{subject}_task-movie_run-{item:02d}_bold')
-    movie_sbref = create_key('sub-{subject}/func/sub-{subject}_task-movie_run-{item:02d}_sbref')
-
-    info.pop(rest)
-    info.pop(rest_sbref)
-    info.pop(rest_psf)
-    info.pop(rest_psf_dico)
-    info.pop(movie)
-    info.pop(movie_sbref)
 
     # create functional keys
-    task_ge = create_key('sub-{subject}/func/sub-{subject}_task-{task}_acq-ge_part-mag_run-{run}_bold')
-    task_ge_phase = create_key('sub-{subject}/func/sub-{subject}_task-{task}_acq-ge_part-phase_run-{run}_bold')
-    task_se = create_key('sub-{subject}/func/sub-{subject}_task-{task}_acq-se_run-{run}_bold')
+    task_ge = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-{task}_acq-ge_part-mag_run-{run}_bold')
+    task_ge_phase = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-{task}_acq-ge_part-phase_run-{run}_bold')
+    task_se = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-{task}_acq-se_run-{run}_bold')
 
     # add functional keys to the dictionary
     info[task_ge]=[]
