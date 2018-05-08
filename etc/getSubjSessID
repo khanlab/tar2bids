@@ -23,25 +23,39 @@ result=
 #	echo before: $before
 #	echo between: $between
 #	echo after: $after
+
 	if [ "$between" = "$after" ]
 	then
 		#only one tagname, get it
-		tag1=${subj_expr##${before}\{}
-#		echo "tag1 after stripping $before\{ from front: $tag1"
-		tag1=${tag1%%\}*}
-	
-#		echo tag1 $tag1	
-		if [ "$tag1" = "$searchtag" ]
+		
+		#grep subject or session
+		if echo $subj_expr | grep -q "{$searchtag}"
 		then
-			result=${in_name##$before}
-			result=${result%%$after}
+			#now want to replace before string from in_name
+			stripfront=`echo $in_name | sed -e "s/$before//"`
+
+			if [ -n "$after" ]
+			then
+			result=`echo $stripfront | sed -e "s/$after//"`
+			else
+			result=$stripfront
+			fi
+
+	
 		else
 			echo "$searchtag not found in $subj_expr" >&2
 			exit 1
+
 		fi
+#		echo result $result
 
 	else
-		#echo "multiple tags"
+		#echo "multiple tags", want to replace the before and after 
+		
+		#want to replace before{ with blank
+#		echo $subj_expr 
+#	       echo	sed -e "s/${before}{//"
+#	       echo "$subj_expr" | sed -e "s/${before}{//"
 		tag1=${subj_expr#$before\{}
 		tag1=${tag1%%\}*}
 
@@ -52,13 +66,19 @@ result=
 
 		if [ "$tag1" = "$searchtag" ]
 		then
-			result=${in_name#$before}
+#			echo in_name $in_name
+			result=${in_name##$before}
+#			echo result $result after stripping $before longest from beginning
 			result=${result%%$between*}
+#			echo result $result after stripping $between* longest from end
 
 		elif [ "$tag2" = "$searchtag" ]
 		then
+#			echo in_name $in_name
 			result=${in_name##*$between}
+#			echo result $result after stripping *$between longest from beginning
 			result=${result%$after}
+#			echo result $result after stripping $after shortest from end
 		else
 			echo "$searchtag not found in $subj_expr" >&2
 			exit 1
