@@ -227,7 +227,7 @@ if [ -n "$sessid" ]
 then
 
 #update dicominfo.tsv with header line
-for tsv in `ls $output_dir/.heudiconv/*/*/info/dicominfo.tsv`
+for tsv in `ls $output_dir/.heudiconv/*/*/info/dicominfo*tsv`
 do
  tsv_new=$tsv.new 
  cat $execpath/etc/dicominfo_hdr.tsv > $tsv_new
@@ -238,7 +238,7 @@ done
 else
 
 #update dicominfo.tsv with header line
-for tsv in `ls $output_dir/.heudiconv/*/info/dicominfo.tsv`
+for tsv in `ls $output_dir/.heudiconv/*/info/dicominfo*tsv`
 do
  tsv_new=$tsv.new 
  cat $execpath/etc/dicominfo_hdr.tsv > $tsv_new
@@ -268,13 +268,28 @@ fi
 if [ ! "$Nfmaps" = 0 ]
 then
 echo "  Running bids correction from phasediff fieldmap data..."
-cat $subjlist | parallel $popts "$execpath/etc/correctFieldMap $output_dir {} | tee -a $tuneup_log.{} " 
+
+if [ -n "$sessid" ]
+then
+parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctFieldMap $output_dir {1} {2} | tee -a $tuneup_log.{1}.{2} " 
+else
+parallel -a $heudiconv_subjlist  $popts "$execpath/etc/correctFieldMap $output_dir {1} | tee -a $tuneup_log.{1}" 
+fi
+
 fi
 
 if [ ! "$Ngre" = 0 -o ! "$Nmemp2rage" = 0 ]
 then
 echo "  Running bids correction from multi-echo GRE and MP2RAGE fieldmap data..."
-cat $subjlist | parallel $popts "$execpath/etc/correctMultiEcho $output_dir {} | tee -a $tuneup_log.{}"
+
+if [ -n "$sessid" ]
+then
+
+parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctMultiEcho $output_dir {1} {2} | tee -a $tuneup_log.{1}.{2}"
+else
+parallel -a $heudiconv_subjlist $popts "$execpath/etc/correctMultiEcho $output_dir {1} | tee -a $tuneup_log.{1}"
+fi
+
 fi
 
 echo "  Cleaning participants file (sorting, removing extra columns)..."

@@ -66,13 +66,16 @@ def correctFieldMapJson(bids_dir,sub,ses=None):
 
 if __name__=="__main__":
     if len(sys.argv)-1 < 2:
-        print ("Usage: python " + os.path.basename(__file__)+  " 'bids_dir' 'sub' ")
+        print ("Usage: python " + os.path.basename(__file__)+  " 'bids_dir' 'sub' 'ses (optional)'")
         sys.exit()
     else:
         bids_dir = sys.argv[1]
         sub = sys.argv[2]
-
-        correctFieldMapJson(bids_dir,sub)
+        if len(sys.argv)-1 > 2:
+            ses=sys.argv[3]
+            correctFieldMapJson(bids_dir,sub,ses)
+        else:
+            correctFieldMapJson(bids_dir,sub)
 
 #test
 #Usage: python correctFieldMapJson.py 'bids_dir' 'sub'

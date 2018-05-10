@@ -26,17 +26,18 @@ result=
 
 	if [ "$between" = "$after" ]
 	then
-		#only one tagname, get it
+		#only one tagname, get it  -- 
 		
 		#grep subject or session
 		if echo $subj_expr | grep -q "{$searchtag}"
 		then
 			#now want to replace before string from in_name
-			stripfront=`echo $in_name | sed -e "s/$before//"`
-
+			stripfront=${in_name##$before}
+#			echo stripfront $stripfront
 			if [ -n "$after" ]
 			then
 			result=`echo $stripfront | sed -e "s/$after//"`
+#			echo result $result
 			else
 			result=$stripfront
 			fi
@@ -47,38 +48,47 @@ result=
 			exit 1
 
 		fi
-#		echo result $result
 
 	else
-		#echo "multiple tags", want to replace the before and after 
+
+		#find out whether tag1 is subject or session
+		nc_subj=`echo $subj_expr | grep -bo "{subject}" | cut -d: -f1`
+		nc_sess=`echo $subj_expr | grep -bo "{session}" | cut -d: -f1`
+
+#		echo nc_subj $nc_subj nc_sess $nc_sess
+		if [ $nc_subj -lt $nc_sess ]
+		then
+			tag1n=subject
+			tag2n=session
+		else
+			tag1n=session
+			tag2n=subject
+		fi
+
 		
-		#want to replace before{ with blank
-#		echo $subj_expr 
-#	       echo	sed -e "s/${before}{//"
-#	       echo "$subj_expr" | sed -e "s/${before}{//"
-		tag1=${subj_expr#$before\{}
-		tag1=${tag1%%\}*}
+		#if there is a * in before, then find tag2 first and strip it off before finding tag1 
+		#if there is a * in after, then find tag 1 first, and strip it off before finding tag2
 
-		tag2=${subj_expr#$before\{$tag1\}$between\{}
-		tag2=${tag2%%\}*}
-#		echo tag1: $tag1
-#		echo tag2: $tag2
+		#case1
 
-		if [ "$tag1" = "$searchtag" ]
+		#get tag2 result
+		result=${in_name%%$after}
+#		echo result $result
+		tag2result=${result##${before}*${between}}
+#		echo tag2result $tag2result
+		
+		#now use this to get tag1 result 
+		result=${in_name%%${between}${tag2result}}
+		tag1result=${result##${before}}
+#		echo tag1result $tag1result
+		
+
+		if [ "$tag1n" = "$searchtag" ]
 		then
-#			echo in_name $in_name
-			result=${in_name##$before}
-#			echo result $result after stripping $before longest from beginning
-			result=${result%%$between*}
-#			echo result $result after stripping $between* longest from end
-
-		elif [ "$tag2" = "$searchtag" ]
+			result=$tag1result
+		elif [ "$tag2n" = "$searchtag" ]
 		then
-#			echo in_name $in_name
-			result=${in_name##*$between}
-#			echo result $result after stripping *$between longest from beginning
-			result=${result%$after}
-#			echo result $result after stripping $after shortest from end
+			result=$tag2result
 		else
 			echo "$searchtag not found in $subj_expr" >&2
 			exit 1
