@@ -295,6 +295,10 @@ fi
 echo "  Cleaning participants file (sorting, removing extra columns)..."
 $execpath/etc/cleanParticipantsFile $output_dir
 
+echo "  Adding default .bidsignore file..."
+cp -v $execpath/etc/bidsignore $output_dir/.bidsignore
+
+
 echo "  Running bids-validator..."
 bids-validator $output_dir | tee  $validator_out
 

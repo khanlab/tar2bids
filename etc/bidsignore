@@ -1,0 +1,15 @@
+# MP2RAGE, MEMP2RAGE, Sa2RAGE
+#without session:
+*/*/*2RAGE.*
+*/*/*_echo-*_*2RAGE*.*
+#with session:
+*/*/*/*2RAGE.*
+*/*/*/*_echo-*_*2RAGE*.*
+
+# mag/phase parts of bold:
+#without session:
+*/func/*part-*bold.*
+*/func/*part-*events.*
+#with session:
+*/*/func/*part-*bold.*
+*/*/func/*part-*events.*
