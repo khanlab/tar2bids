@@ -14,11 +14,13 @@ def correctFieldMapJson(bids_dir,sub,ses=None):
     if ses: #ses not None
         sub_prefix = '{}_{}'.format(sub,ses)
         sub_path_prefix=os.path.join(sub,ses)
+        sub_root = '{}'.format(sub)
     else:
         sub_prefix = '{}'.format(sub)
         sub_path_prefix = sub_prefix
         
     sub_dir=os.path.join(bids_dir,sub_path_prefix)
+    sub_root_dir=os.path.join(bids_dir,sub_root) #without session
 
     phasediff_json_file=os.path.join(sub_dir,'fmap','{}_phasediff.json'.format(sub_prefix))
     mag1_json_file=os.path.join(sub_dir,'fmap','{}_magnitude1.json'.format(sub_prefix))
@@ -49,7 +51,7 @@ def correctFieldMapJson(bids_dir,sub,ses=None):
 
     # apply to all bold images
     cwd=os.getcwd()
-    os.chdir(sub_dir)
+    os.chdir(sub_root_dir)
     if ses:
         all_bold = glob.glob(os.path.join('{}'.format(ses),'func','{}_*_bold.nii.gz'.format(sub_prefix)))
     else:
