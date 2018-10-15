@@ -18,6 +18,7 @@ def correctFieldMapJson(bids_dir,sub,ses=None):
     else:
         sub_prefix = '{}'.format(sub)
         sub_path_prefix = sub_prefix
+        sub_root = '{}'.format(sub)
         
     sub_dir=os.path.join(bids_dir,sub_path_prefix)
     sub_root_dir=os.path.join(bids_dir,sub_root) #without session
