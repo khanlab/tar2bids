@@ -22,8 +22,10 @@ fi
 
 if [ -n "$ses" ]
 then
+    $exec_path/magfmap_bids_corrector.py $in_bids/sub-$subj/ses-$ses/fmap
 	$exec_path/correctFieldMapJson.py $in_bids sub-$subj ses-$ses
 else
+    $exec_path/magfmap_bids_corrector.py $in_bids/sub-$subj/fmap
 	$exec_path/correctFieldMapJson.py $in_bids sub-$subj
 fi
 
