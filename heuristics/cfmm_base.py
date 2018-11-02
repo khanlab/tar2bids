@@ -391,7 +391,7 @@ def infotodict(seqinfo):
                 info[dwi_sbref].append({'item': s.series_id})
 
         #susceptibility ND multiecho
-	if ('susc' in s.series_description or 'gre3d' in s.series_description):
+	if ('susc' in s.series_description or 'gre3d' in s.series_description or 't1_fl3d_p4_iso' in s.series_description ):
 	    if ('M' in (s.image_type[2].strip())):
                  if ('ND' in (s.image_type[3].strip())):
     	            info[mag_echo_GRE].append({'item': s.series_id})
