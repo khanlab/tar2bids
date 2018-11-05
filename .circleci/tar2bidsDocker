@@ -20,7 +20,7 @@ mkdir -p bids
 wget -qO- $TESTDATA_URL > $TARFILE 
 docker create -v /data --name testdata alpine:3.4 /bin/true
 docker cp $TARFILE testdata:/data
-docker run  --name testapp  --volumes-from testdata -it $DOCKER_NAME $OPTARGS -o /out $TARFILE
+docker run  --name testapp  --volumes-from testdata -it $DOCKER_NAME $OPTARGS -o /out /data/$TARFILE
 retval=$?
 docker cp testapp:/out $OUT_FOLDER
 
