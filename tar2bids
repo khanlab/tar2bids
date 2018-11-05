@@ -34,7 +34,7 @@ execpath=`realpath $execpath`
 
 heuristic_dir=$execpath/heuristics
 output_dir=./bids
-heuristic=cfmm_bold_rest.py
+heuristic=cfmm_base.py
 heudi_opts=
 patientname_search='*_{subject}'
 tarfile_search=
