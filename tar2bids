@@ -302,5 +302,5 @@ cp -v $execpath/etc/bidsignore $output_dir/.bidsignore
 echo "  Running bids-validator..."
 bids-validator $output_dir | tee  $validator_out
 
-
-exit 0
+#exit with return val of bids validator
+exit $?
