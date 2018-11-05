@@ -13,3 +13,13 @@
 #with session:
 */*/func/*part-*bold.*
 */*/func/*part-*events.*
+
+
+#GRE
+*/anat/*GRE.*
+*/*/anat/*GRE.*
+
+#MIP
+*/anat/*MIP.*
+*/*/anat/*MIP.*
+
