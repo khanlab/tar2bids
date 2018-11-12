@@ -205,7 +205,7 @@ popts="--no-notice --verbose --jobs $ncores -u"
 
 if [ -n "$tempdir" ]
 then
-    heudi_opts="$heudi_opts --tempdir $tempdir"
+    export TMPDIR=$tempdir
 fi
 
 echo "  Running: heudiconv ... "
