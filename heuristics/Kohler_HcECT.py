@@ -44,7 +44,7 @@ def infotodict(seqinfo):
             else:
 
                 #check what task it is
-                if ('soundcheck' in (s.series_description).strip()):
+                if ('soundcheck' in (s.series_description).strip().lower()):
                     taskname='soundcheck'
                     taskvols=40
 
@@ -54,7 +54,7 @@ def infotodict(seqinfo):
                         info[task_soundcheck].append({'item': s.series_id,'task': taskname})
 
 
-                elif ('intact' in (s.series_description).strip()):
+                elif ('intact' in (s.series_description).strip().lower()):
                     taskname='intact'
                     taskvols=320
 
@@ -64,7 +64,7 @@ def infotodict(seqinfo):
                         info[task_intact].append({'item': s.series_id,'task': taskname})
 
 
-                elif ('scrambled' in (s.series_description).strip()):
+                elif ('scrambled' in (s.series_description).strip().lower()):
                     taskname='scrambled'
                     taskvols=320
 

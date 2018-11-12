@@ -384,7 +384,7 @@ def infotodict(seqinfo):
                     info[fmap_magnitude].append({'item': s.series_id})
 
         #dwi
-        if ('diff' in s.protocol_name or 'DWI' in s.series_description ):
+        if ('diff' in s.protocol_name or 'DWI' in s.series_description  or 'DTI' in s.series_description ):
             if ( s.dim4 > 1 and ('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip()) ):
                 info[dwi].append({'item': s.series_id})
             if ( s.dim4 == 1  and 'SBRef' in (s.series_description).strip() ) :
