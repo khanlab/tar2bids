@@ -262,50 +262,50 @@ def infotodict(seqinfo):
 
 		#mp2rage
         if ('mp2rage' in s.series_description  and (not 'memp2rage' in s.series_description ) ):
-                if ('INV1' in (s.series_description).strip()):
-                                if ('DIS2D' in (s.image_type[3].strip())):
-    		    		    info[DIS2D_inv1_mp2rage].append({'item': s.series_id})
-                                if ('DIS3D' in (s.image_type[3].strip())):
-    		    		    info[DIS3D_inv1_mp2rage].append({'item': s.series_id})
-                                if ('ND' in (s.image_type[3].strip())):
-    		    		    info[inv1_mp2rage].append({'item': s.series_id})
+            if ('INV1' in (s.series_description).strip()):
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_inv1_mp2rage].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_inv1_mp2rage].append({'item': s.series_id})
+                if ('ND' in (s.image_type[3].strip())):
+                    info[inv1_mp2rage].append({'item': s.series_id})
 			if ('T1_Images' in (s.series_description).strip()):
-                                if ('DIS2D' in (s.image_type[3].strip())):
-                                    info[DIS2D_t1map].append({'item': s.series_id})                                
-                                if ('DIS3D' in (s.image_type[3].strip())):
-                                    info[DIS3D_t1map].append({'item': s.series_id})
-                                if ('ND' in (s.image_type[3].strip())):
-    		    		    info[t1map].append({'item': s.series_id})
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_t1map].append({'item': s.series_id})                                
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_t1map].append({'item': s.series_id})
+                if ('ND' in (s.image_type[3].strip())):
+                    info[t1map].append({'item': s.series_id})
 			if ('UNI-DEN' in (s.series_description).strip()):
-                                if ('ND' in (s.image_type[3].strip())):
-    		    		    info[t1w].append({'item': s.series_id})
-                                elif ('DIS2D' in (s.image_type[4].strip())):
-                                    info[DIS2D_t1w].append({'item': s.series_id})
-                                elif ('DIS3D' in (s.image_type[4].strip())):
-                                    info[DIS3D_t1w].append({'item': s.series_id})
-                        if ('UNI_Images' in (s.series_description).strip()):
-                                if ('DIS2D' in (s.image_type[3].strip())):
-    		    		    info[DIS2D_uni_mp2rage].append({'item': s.series_id})
-                                if ('DIS3D' in (s.image_type[3].strip())):
-    		    	            info[DIS3D_uni_mp2rage].append({'item': s.series_id})
-                                if ('ND' in (s.image_type[3].strip())):
-    		    		    info[uni_mp2rage].append({'item': s.series_id})
-			if ('_INV2' in (s.series_description).strip()):
-                                if ('DIS2D' in (s.image_type[3].strip())):
-    		    		    info[DIS2D_inv2_mp2rage].append({'item': s.series_id})
-                                if ('DIS3D' in (s.image_type[3].strip())):
-    		    		    info[DIS3D_inv2_mp2rage].append({'item': s.series_id})
-                                if ('ND' in (s.image_type[3].strip())):
-    		    		    info[inv2_mp2rage].append({'item': s.series_id})
+                if ('ND' in (s.image_type[3].strip())):
+                    info[t1w].append({'item': s.series_id})
+                elif ('DIS2D' in (s.image_type[4].strip())):
+                    info[DIS2D_t1w].append({'item': s.series_id})
+                elif ('DIS3D' in (s.image_type[4].strip())):
+                    info[DIS3D_t1w].append({'item': s.series_id})
+            if ('UNI_Images' in (s.series_description).strip()):
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_uni_mp2rage].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_uni_mp2rage].append({'item': s.series_id})
+                if ('ND' in (s.image_type[3].strip())):
+                    info[uni_mp2rage].append({'item': s.series_id})
+            if ('_INV2' in (s.series_description).strip()):
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_inv2_mp2rage].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_inv2_mp2rage].append({'item': s.series_id})
+                if ('ND' in (s.image_type[3].strip())):
+                    info[inv2_mp2rage].append({'item': s.series_id})
 
 
         if ('mprage' in s.protocol_name or 'T1w' in s.protocol_name or 'MPRAGE' in s.protocol_name):
-		if ('DIS2D' in (s.image_type[3].strip())):
-			info[DIS2D_t1w_mprage].append({'item': s.series_id})
-		if ('DIS3D' in (s.image_type[3].strip())):
-			info[DIS3D_t1w_mprage].append({'item': s.series_id})
-		if ('ND' in (s.image_type[3].strip())):
-			info[t1w_mprage].append({'item': s.series_id})
+            if ('DIS2D' in (s.image_type[3].strip())):
+                info[DIS2D_t1w_mprage].append({'item': s.series_id})
+            if ('DIS3D' in (s.image_type[3].strip())):
+                info[DIS3D_t1w_mprage].append({'item': s.series_id})
+            if ('ND' in (s.image_type[3].strip())):
+                info[t1w_mprage].append({'item': s.series_id})
 
 
     #double inversion recovery t2 space
@@ -321,27 +321,27 @@ def infotodict(seqinfo):
 
 	#sa2rage
         if ('sa2rage' in s.series_description):
-                    if ('ND' in (s.image_type[3].strip())):
-			if ('invContrast1' in s.series_description):
-				info[inv_1_sa2rage].append({'item': s.series_id})
-			if ('invContrast2' in s.series_description):
-				info[inv_2_sa2rage].append({'item': s.series_id})
-                        if ('OTHER' in (s.image_type[2].strip())):
-				info[b1map_sa2rage].append({'item': s.series_id})
-			if ('b1DivImg' in s.series_description):
-				info[b1Div_sa2rage].append({'item': s.series_id})
-                    if ('DIS2D' in (s.image_type[3].strip())):
-			if ('invContrast1' in s.series_description):
-				info[DIS2D_inv_1_sa2rage].append({'item': s.series_id})
-			if ('invContrast2' in s.series_description):
-				info[DIS2D_inv_2_sa2rage].append({'item': s.series_id})
-                        if ('OTHER' in (s.image_type[2].strip())):
-				info[DIS2D_b1map_sa2rage].append({'item': s.series_id})
-			if ('b1DivImg' in s.series_description):
-				info[DIS2D_b1Div_sa2rage].append({'item': s.series_id})
-                    if ('DIS3D' in (s.image_type[3].strip())):
-                        if ('OTHER' in (s.image_type[2].strip())):
-				info[DIS3D_b1map_sa2rage].append({'item': s.series_id})
+            if ('ND' in (s.image_type[3].strip())):
+                if ('invContrast1' in s.series_description):
+                    info[inv_1_sa2rage].append({'item': s.series_id})
+                if ('invContrast2' in s.series_description):
+                    info[inv_2_sa2rage].append({'item': s.series_id})
+                if ('OTHER' in (s.image_type[2].strip())):
+                    info[b1map_sa2rage].append({'item': s.series_id})
+                if ('b1DivImg' in s.series_description):
+                    info[b1Div_sa2rage].append({'item': s.series_id})
+            if ('DIS2D' in (s.image_type[3].strip())):
+                if ('invContrast1' in s.series_description):
+                    info[DIS2D_inv_1_sa2rage].append({'item': s.series_id})
+                if ('invContrast2' in s.series_description):
+                    info[DIS2D_inv_2_sa2rage].append({'item': s.series_id})
+                if ('OTHER' in (s.image_type[2].strip())):
+                    info[DIS2D_b1map_sa2rage].append({'item': s.series_id})
+                if ('b1DivImg' in s.series_description):
+                    info[DIS2D_b1Div_sa2rage].append({'item': s.series_id})
+            if ('DIS3D' in (s.image_type[3].strip())):
+                if ('OTHER' in (s.image_type[2].strip())):
+                    info[DIS3D_b1map_sa2rage].append({'item': s.series_id})
 	
 
   
