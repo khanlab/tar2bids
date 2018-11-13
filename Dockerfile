@@ -100,7 +100,8 @@ RUN export PATH="/opt/miniconda-latest/bin:$PATH" \
            nomkl \
     && sync && conda clean -tipsy && sync \
     && bash -c "source activate base \
-    &&   pip install --no-cache-dir --editable \
+    &&  pip install pydicom dcmstack nipype nibabel && \
+	pip install --no-cache-dir --editable \
              /src/heudiconv[all]" \
     && rm -rf ~/.cache/pip/* \
     && sync
