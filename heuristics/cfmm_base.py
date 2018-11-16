@@ -77,21 +77,55 @@ def infotodict(seqinfo):
     DIS3D_b1map_sa2rage = create_key('{bids_subject_session_dir}/fmap/{bids_subject_session_prefix}_acq-b1map_rec-DIS3D_SA2RAGE')
 
 
-
+    #T2w:
     #2D TSE
     t2_tse = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSE_run-{item:02d}_T2w')
     DIS2D_t2_tse = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSE_run-{item:02d}_rec-DIS2D_T2w')
     DIS3D_t2_tse = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSE_run-{item:02d}_rec-DIS3D_T2w')
 
     #2D TSE Transverse
-    tse_tra_T2w = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEtra_T2w')
-    DIS2D_tse_tra_T2w = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEtra_rec-DIS2D_T2w')
-    DIS3D_tse_tra_T2w = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEtra_rec-DIS3D_T2w')
+    t2_tse_tra = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEtra_run-{item:02d}_T2w')
+    DIS2D_t2_tse_tra = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEtra_rec-DIS2D_run-{item:02d}_T2w')
+    DIS3D_t2_tse_tra = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEtra_rec-DIS3D_run-{item:02d}_T2w')
 
     #2D TSE Coronal
-    tse_cor_T2w = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEcor_T2w')
-    DIS2D_tse_cor_T2w = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEcor_rec-DIS2D_T2w')
-    DIS3D_tse_cor_T2w = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEcor_rec-DIS3D_T2w')
+    t2_tse_cor = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEcor_run-{item:02d}_T2w')
+    DIS2D_t2_tse_cor = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEcor_rec-DIS2D_run-{item:02d}_T2w')
+    DIS3D_t2_tse_cor = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEcor_rec-DIS3D_run-{item:02d}_T2w')
+
+    #PD:
+    #2D TSE
+    pd_tse = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSE_run-{item:02d}_PD')
+    DIS2D_pd_tse = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSE_run-{item:02d}_rec-DIS2D_PD')
+    DIS3D_pd_tse = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSE_run-{item:02d}_rec-DIS3D_PD')
+
+    #2D TSE Transverse
+    pd_tse_tra = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEtra_run-{item:02d}_PD')
+    DIS2D_pd_tse_tra = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEtra_rec-DIS2D_run-{item:02d}_PD')
+    DIS3D_pd_tse_tra = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEtra_rec-DIS3D_run-{item:02d}_PD')
+
+    #2D TSE Coronal
+    pd_tse_cor = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEcor_run-{item:02d}_PD')
+    DIS2D_pd_tse_cor = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEcor_rec-DIS2D_run-{item:02d}_PD')
+    DIS3D_pd_tse_cor = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TSEcor_rec-DIS3D_run-{item:02d}_PD')
+
+
+    #combined PDT2
+    #2D TSE
+    pd_t2_tse = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-TSE_run-{item:02d}_PDT2')
+    DIS2D_pd_t2_tse = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-TSE_run-{item:02d}_rec-DIS2D_PDT2')
+    DIS3D_pd_t2_tse = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-TSE_run-{item:02d}_rec-DIS3D_PDT2')
+
+    #2D TSE Transverse
+    pd_t2_tse_tra = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-TSEtra_run-{item:02d}_PDT2')
+    DIS2D_pd_t2_tse_tra = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-TSEtra_rec-DIS2D_run-{item:02d}_PDT2')
+    DIS3D_pd_t2_tse_tra = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-TSEtra_rec-DIS3D_run-{item:02d}_PDT2')
+
+    #2D TSE Coronal
+    pd_t2_tse_cor = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-TSEcor_run-{item:02d}_PDT2')
+    DIS2D_pd_t2_tse_cor = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-TSEcor_rec-DIS2D_run-{item:02d}_PDT2')
+    DIS3D_pd_t2_tse_cor = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-TSEcor_rec-DIS3D_run-{item:02d}_PDT2')
+
 
 
 
@@ -209,9 +243,19 @@ def infotodict(seqinfo):
          inv_1_sa2rage:[],inv_2_sa2rage:[],b1Div_sa2rage:[],b1map_sa2rage:[],
          DIS2D_inv_1_sa2rage:[],DIS2D_inv_2_sa2rage:[],DIS2D_b1Div_sa2rage:[],DIS2D_b1map_sa2rage:[],
          DIS3D_b1map_sa2rage:[],
+
          t2_tse:[], DIS2D_t2_tse:[], DIS3D_t2_tse:[],
-         tse_tra_T2w:[], DIS2D_tse_tra_T2w:[], DIS3D_tse_tra_T2w:[],
-         tse_cor_T2w:[], DIS2D_tse_cor_T2w:[], DIS3D_tse_cor_T2w:[],
+         t2_tse_tra:[], DIS2D_t2_tse_tra:[], DIS3D_t2_tse_tra:[],
+         t2_tse_cor:[], DIS2D_t2_tse_cor:[], DIS3D_t2_tse_cor:[],
+
+         pd_tse:[], DIS2D_pd_tse:[], DIS3D_pd_tse:[],
+         pd_tse_tra:[], DIS2D_pd_tse_tra:[], DIS3D_pd_tse_tra:[],
+         pd_tse_cor:[], DIS2D_pd_tse_cor:[], DIS3D_pd_tse_cor:[],
+
+         pd_t2_tse:[], DIS2D_pd_t2_tse:[], DIS3D_pd_t2_tse:[],
+         pd_t2_tse_tra:[], DIS2D_pd_t2_tse_tra:[], DIS3D_pd_t2_tse_tra:[],
+         pd_t2_tse_cor:[], DIS2D_pd_t2_tse_cor:[], DIS3D_pd_t2_tse_cor:[],
+
          dwi:[],dwi_sbref:[],
          fmap_diff:[],fmap_magnitude:[],
          dir_t2:[], DIS2D_dir_t2:[]}
@@ -248,7 +292,7 @@ def infotodict(seqinfo):
 
 
         #mp2rage
-        if ('mp2rage' in s.series_description  and (not 'memp2rage' in s.series_description ) ):
+        if ('mp2rage' in s.series_description.lower()  and (not 'memp2rage' in s.series_description.lower() ) ):
             if ('INV1' in (s.series_description).strip()):
                 if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_inv1_mp2rage].append({'item': s.series_id})
@@ -334,23 +378,53 @@ def infotodict(seqinfo):
   
         #t2 tse
     #tse tra T2w
-        if ('t2_tse_tra' in s.series_description): 
+
+
+        if ('pd_t2_tse_tra' in s.series_description): 
                 if ('ND' in (s.image_type[3].strip())):
-                    info[tse_tra_T2w].append({'item': s.series_id})
+                    info[pd_t2_tse_tra].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
-                    info[DIS3D_tse_tra_T2w].append({'item': s.series_id})
+                    info[DIS3D_pd_t2_tse_tra].append({'item': s.series_id})
                 if ('DIS2D' in (s.image_type[3].strip())):
-                    info[DIS2D_tse_tra_T2w].append({'item': s.series_id})
+                    info[DIS2D_pd_t2_tse_tra].append({'item': s.series_id})
+
+
+                #tse cor T2w
+        elif ('pd_t2_tse_cor' in s.series_description): 
+                if ('ND' in (s.image_type[3].strip())):
+                    info[pd_t2_tse_cor].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_pd_t2_tse_cor].append({'item': s.series_id})
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_pd_t2_tse_cor].append({'item': s.series_id})
+
+        elif ('pd_t2_tse' in s.series_description): 
+                if ('ND' in (s.image_type[3].strip())):
+                    info[pd_t2_tse].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_pd_t2_tse].append({'item': s.series_id})
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_pd_t2_tse].append({'item': s.series_id})
+
+
+
+        elif ('t2_tse_tra' in s.series_description): 
+                if ('ND' in (s.image_type[3].strip())):
+                    info[t2_tse_tra].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_t2_tse_tra].append({'item': s.series_id})
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_t2_tse_tra].append({'item': s.series_id})
 
 
                 #tse cor T2w
         elif ('t2_tse_cor' in s.series_description): 
                 if ('ND' in (s.image_type[3].strip())):
-                    info[tse_cor_T2w].append({'item': s.series_id})
+                    info[t2_tse_cor].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
-                    info[DIS3D_tse_cor_T2w].append({'item': s.series_id})
+                    info[DIS3D_t2_tse_cor].append({'item': s.series_id})
                 if ('DIS2D' in (s.image_type[3].strip())):
-                    info[DIS2D_tse_cor_T2w].append({'item': s.series_id})
+                    info[DIS2D_t2_tse_cor].append({'item': s.series_id})
 
 
         elif ('t2_tse' in s.series_description): 
@@ -360,6 +434,34 @@ def infotodict(seqinfo):
                     info[DIS3D_t2_tse].append({'item': s.series_id})
                 if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_t2_tse].append({'item': s.series_id})
+
+        if ('pd_tse_tra' in s.series_description): 
+                if ('ND' in (s.image_type[3].strip())):
+                    info[pd_tse_tra].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_pd_tse_tra].append({'item': s.series_id})
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_pd_tse_tra].append({'item': s.series_id})
+
+
+                #tse cor T2w
+        elif ('pd_tse_cor' in s.series_description): 
+                if ('ND' in (s.image_type[3].strip())):
+                    info[pd_tse_cor].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_pd_tse_cor].append({'item': s.series_id})
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_pd_tse_cor].append({'item': s.series_id})
+
+
+        elif ('pd_tse' in s.series_description): 
+                if ('ND' in (s.image_type[3].strip())):
+                    info[pd_tse].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_pd_tse].append({'item': s.series_id})
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_pd_tse].append({'item': s.series_id})
+
 
 
                           #gre field map   
@@ -426,7 +528,7 @@ def infotodict(seqinfo):
                 info[DIS3D_T2_star].append({'item': s.series_id})
 
         #spc T2w
-        if ('spc_T2' in s.series_description or 'T2w_SPC' in s.series_description or 'T2w_space' in s.series_description or 't2_space' in s.series_description): 
+        if ('spc_T2' in s.series_description or 'T2w_SPC' in s.series_description or 'T2w_space' in s.series_description or 't2_space' in s.series_description or 't2_spc' in s.series_description ): 
             if ('ND' in (s.image_type[3].strip())):
                 info[spc_T2w].append({'item': s.series_id})
             if ('DIS2D' in (s.image_type[3].strip())):

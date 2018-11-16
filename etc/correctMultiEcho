@@ -40,3 +40,6 @@ fi
 
 
 	$exec_path/memp2rage_bids_corrector.py $in_bids/$out_folder/anat
+
+	$exec_path/pdt2_bids_corrector.py $in_bids/$out_folder/anat
+

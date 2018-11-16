@@ -14,6 +14,6 @@ tmp_tsv=$in_bids/participants_new.tsv
 #sort it
 sort $tsv  > $tmp_tsv
 
-#remove fourth column (group) since is it not correct
-awk -F '\t' '{OFS="\t"} {print $1,$2,$3}' $tmp_tsv > $tsv
+#remove all columns except ID, since age, sex entered at console not always correct
+awk -F '\t' '{OFS="\t"} {print $1}' $tmp_tsv > $tsv
 rm -f $tmp_tsv
