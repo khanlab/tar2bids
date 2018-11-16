@@ -73,10 +73,10 @@ RUN apt-get update -qq \
 #checkout git heudiconv
 
 
-RUN git clone https://github.com/nipy/heudiconv /src/heudiconv \
-    && cd /src/heudiconv \
-    && git fetch --tags \
-    && git checkout v0.5.1 
+RUN git clone https://github.com/isolovey-robarts/heudiconv /src/heudiconv 
+#    && cd /src/heudiconv 
+#    && git fetch --tags \
+#    && git checkout v0.5.1 
 
 
 ENV CONDA_DIR="/opt/miniconda-latest" \
