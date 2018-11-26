@@ -349,31 +349,29 @@ def infotodict(seqinfo):
                 info[dir_t2].append({'item': s.series_id})
 
 
-
     #sa2rage
         if ('sa2rage' in s.series_description):
             if ('ND' in (s.image_type[3].strip())):
                 if ('invContrast1' in s.series_description):
-                    info[inv_1_sa2rage].append({'item': s.series_id})
+                    info[inv_1_sa2rage] = [s.series_id]
                 if ('invContrast2' in s.series_description):
-                    info[inv_2_sa2rage].append({'item': s.series_id})
+                    info[inv_2_sa2rage] = [s.series_id]
                 if ('OTHER' in (s.image_type[2].strip())):
-                    info[b1map_sa2rage].append({'item': s.series_id})
+                    info[b1map_sa2rage] = [s.series_id]
                 if ('b1DivImg' in s.series_description):
-                    info[b1Div_sa2rage].append({'item': s.series_id})
+                    info[b1Div_sa2rage] = [s.series_id]
             if ('DIS2D' in (s.image_type[3].strip())):
                 if ('invContrast1' in s.series_description):
-                    info[DIS2D_inv_1_sa2rage].append({'item': s.series_id})
+                    info[DIS2D_inv_1_sa2rage] = [s.series_id]
                 if ('invContrast2' in s.series_description):
-                    info[DIS2D_inv_2_sa2rage].append({'item': s.series_id})
+                    info[DIS2D_inv_2_sa2rage] = [s.series_id]
                 if ('OTHER' in (s.image_type[2].strip())):
-                    info[DIS2D_b1map_sa2rage].append({'item': s.series_id})
+                    info[DIS2D_b1map_sa2rage] = [s.series_id]
                 if ('b1DivImg' in s.series_description):
-                    info[DIS2D_b1Div_sa2rage].append({'item': s.series_id})
+                    info[DIS2D_b1Div_sa2rage] = [s.series_id]
             if ('DIS3D' in (s.image_type[3].strip())):
                 if ('OTHER' in (s.image_type[2].strip())):
-                    info[DIS3D_b1map_sa2rage].append({'item': s.series_id})
-    
+                    info[DIS3D_b1map_sa2rage] = [s.series_id]
 
   
         #t2 tse
@@ -549,19 +547,19 @@ def infotodict(seqinfo):
         if ('3D_TOF' in s.series_description): 
             if (s.dim3>1):
                 if ('ND' in (s.image_type[3].strip())):
-                    info[TOF_angio].append({'item': s.series_id})
+                    info[TOF_angio] = [s.series_id]
                 if ('DIS2D' in (s.image_type[3].strip())):
-                    info[DIS2D_TOF_angio].append({'item': s.series_id})
+                    info[DIS2D_TOF_angio] = [s.series_id]
                 if ('DIS3D' in (s.image_type[3].strip())):
-                    info[DIS3D_TOF_angio].append({'item': s.series_id})
+                    info[DIS3D_TOF_angio] = [s.series_id]
             if (s.dim4==1):
                 if ('DIS2D' in (s.image_type[3].strip())):
                     if ('SAG' in (s.series_description).strip()):
-                        info[DIS2D_TOF_SAG].append({'item': s.series_id})
+                        info[DIS2D_TOF_SAG] = [s.series_id]
                     if ('COR' in (s.series_description).strip()):
-                        info[DIS2D_TOF_COR].append({'item': s.series_id})
+                        info[DIS2D_TOF_COR] = [s.series_id]
                     if ('TRA' in (s.series_description).strip()):
-                        info[DIS2D_TOF_TRA].append({'item': s.series_id})
+                        info[DIS2D_TOF_TRA] = [s.series_id]
 
    
     return info
