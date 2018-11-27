@@ -481,19 +481,19 @@ def infotodict(seqinfo):
         if ('susc' in s.series_description or 'gre3d' in s.series_description or 't1_fl3d_p4_iso' in s.series_description ):
             if ('M' in (s.image_type[2].strip())):
                  if ('ND' in (s.image_type[3].strip())):
-                    info[mag_echo_GRE].append({'item': s.series_id})
+                    info[mag_echo_GRE] =  [s.series_id]
                  if ('DIS2D' in (s.image_type[3].strip())):
-                    info[DIS2D_mag_echo_GRE].append({'item': s.series_id})
+                    info[DIS2D_mag_echo_GRE] =  [s.series_id]
                  if ('DIS3D' in (s.image_type[3].strip())):
-                    info[DIS3D_mag_echo_GRE].append({'item': s.series_id})
+                    info[DIS3D_mag_echo_GRE] =  [s.series_id]
 
             if ('P' in (s.image_type[2].strip())):
                  if ('ND' in (s.image_type[3].strip())):
-                    info[phase_echo_GRE].append({'item': s.series_id})
+                    info[phase_echo_GRE] =  [s.series_id]
                  if ('DIS2D' in (s.image_type[3].strip())):
-                    info[DIS2D_phase_echo_GRE].append({'item': s.series_id})
+                    info[DIS2D_phase_echo_GRE] =  [s.series_id]
                  if ('DIS3D' in (s.image_type[3].strip())):
-                    info[DIS3D_phase_echo_GRE].append({'item': s.series_id})
+                    info[DIS3D_phase_echo_GRE] =  [s.series_id]
 
         # MTon GRE (excludes phase image since not needed)
         if ('gre_ptx_MT_On' in s.series_description ):
