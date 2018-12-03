@@ -1,4 +1,3 @@
-#FROM khanlab/heudiconv:latest
 FROM neurodebian:xenial
 MAINTAINER <alik@robarts.ca>
 
@@ -73,10 +72,10 @@ RUN apt-get update -qq \
 #checkout git heudiconv
 
 
-RUN git clone https://github.com/isolovey-robarts/heudiconv /src/heudiconv 
-#    && cd /src/heudiconv 
-#    && git fetch --tags \
-#    && git checkout v0.5.1 
+RUN git clone https://github.com/nipy/heudiconv /src/heudiconv 
+    && cd /src/heudiconv 
+    && git fetch --tags \
+    && git checkout v0.5.1 
 
 
 ENV CONDA_DIR="/opt/miniconda-latest" \
@@ -117,7 +116,7 @@ COPY . /opt/tar2bids
 ## Install bids-validator
 
 #bids validator version:
-ENV TAG 1.0.5
+ENV TAG 1.1.1
 
 RUN apt-get update && \
     apt-get install -y curl git && \
