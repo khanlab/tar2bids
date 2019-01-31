@@ -110,6 +110,8 @@ tuneup_log=$log_dir/logs/tuneup
 heudiconv_subjlist=$log_dir/subj_args.txt
 heudiconv_sesslist=$log_dir/sess_args.txt
 
+heudiconv_opts="$heudiconv_opts --overwrite"
+
 
 # parse tarfile names to get subjids
 for tar in $@
