@@ -39,14 +39,14 @@ def infotodict(seqinfo):
         if  ('MP2RAGE' in s.protocol_name):
             if ('UNI' in (s.series_description).strip()):
                 info[t1uni].append({'item': s.series_id})
-	    if ('T1_Images' in (s.series_description).strip()):
+            if ('T1_Images' in (s.series_description).strip()):
                 info[t1map].append({'item': s.series_id})
-	    if ('INV1' in (s.series_description).strip()):
+            if ('INV1' in (s.series_description).strip()):
                 info[t1inv1].append({'item': s.series_id})
-	    if ('INV2' in (s.series_description).strip()):
+            if ('INV2' in (s.series_description).strip()):
                 info[t1inv2].append({'item': s.series_id})
 
-	#T1w
+        #T1w
         if  ('T1' in s.protocol_name):
                 info[t1].append({'item': s.series_id})
 	
@@ -59,8 +59,8 @@ def infotodict(seqinfo):
             info[rest].append({'item': s.series_id})
 
         if ('Movie' in s.protocol_name):
-	    if ('Movie' == s.series_description):
-                 info[movie].append({'item': s.series_id})
+            if ('Movie' == s.series_description):
+                info[movie].append({'item': s.series_id})
 
 
         #dwi
@@ -68,7 +68,7 @@ def infotodict(seqinfo):
             if ( s.dim4 > 1 and ('diff_mb3_140_b2600_RL' == (s.series_description).strip()) ) :
                 info[dwi_RL].append({'item': s.series_id})
             if ( s.dim4 > 1 and ('diff_mb3_140_b2600_LR' == (s.series_description).strip()) ) :
-		info[dwi_LR].append({'item': s.series_id})
+                info[dwi_LR].append({'item': s.series_id})
 
         if ('DTI' in s.protocol_name):
             if ( s.dim4 > 1 and ('DTI_30' == (s.series_description).strip()) ) :
