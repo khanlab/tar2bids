@@ -1,6 +1,12 @@
 FROM neurodebian:xenial
 MAINTAINER <alik@robarts.ca>
 
+#heudiconv version:
+ENV HEUDICONVTAG v0.5.3
+
+#bids validator version:
+ENV BIDSTAG 1.1.3
+
 #from heudiconv Dockerfile (neurodocker):
 
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -75,7 +81,7 @@ RUN apt-get update -qq \
 RUN git clone https://github.com/nipy/heudiconv /src/heudiconv \
     && cd /src/heudiconv \
     && git fetch --tags \
-    && git checkout v0.5.1 
+    && git checkout $HEUDICONVTAG 
 
 
 ENV CONDA_DIR="/opt/miniconda-latest" \
@@ -115,8 +121,7 @@ COPY . /opt/tar2bids
 
 ## Install bids-validator
 
-#bids validator version:
-ENV TAG 1.1.1
+
 
 RUN apt-get update && \
     apt-get install -y curl git && \
@@ -127,8 +132,8 @@ RUN apt-get update && \
 
 RUN git clone https://github.com/bids-standard/bids-validator /opt/bids-validator && \
     cd /opt/bids-validator && \
-    git checkout $TAG && \
-    sed -i -E "s/0.0.0/$TAG/" package.json && \
+    git checkout $BIDSTAG && \
+    sed -i -E "s/0.0.0/$BIDSTAG/" package.json && \
     npm install -g /opt/bids-validator
 
 #install gnu parallel
