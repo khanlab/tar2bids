@@ -1,0 +1,39 @@
+#!/bin/bash
+
+if [ "$#" -lt 1 ]
+then
+    echo "Usage: $0 <in_bids> <subj ID> <session id (optional)>"
+	exit 1
+fi 
+in_bids=$1
+
+subj=$2
+subj=${subj##sub-} #strip off sub- if it exists, to make consistent
+
+if [ "$#" -gt 2 ]
+then
+    ses=$3
+	ses=${ses##ses-} #strip off sub- if it exists, to make consistent
+fi
+ 
+
+	if [ -n "$ses" ]
+    then
+        out_folder=sub-$subj/ses-$ses
+    else
+        out_folder=sub-$subj
+    fi
+
+    
+    #get image to compute facemask (T1w)
+    defacetarget=`ls $out_folder/anat/*T1w.nii.gz 2>/dev/null | head -n 1`
+    if [ ! -e $defacetarget ]
+    then 
+        echo "Defacing disabled since cannot find eligible T1w image"
+    else
+        #get images to apply to (anything but the prev image, or anything with deface)
+        echo "pydeface --verbose --force $defacetarget --applyto `ls $out_folder/*/*.nii.gz 2>/dev/null | grep -v $defacetarget | grep -v deface`"
+        pydeface --verbose --force $defacetarget --applyto `ls $out_folder/*/*.nii.gz 2>/dev/null | grep -v $defacetarget | grep -v deface`
+
+    fi
+

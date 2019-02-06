@@ -295,6 +295,16 @@ fi
 
 fi
 
+
+echo "  Defacing images with pydeface..."
+if [ -n "$sessid" ]
+then
+parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/defaceImages $output_dir {1} {2} | tee -a $tuneup_log.{1}.{2}"
+else
+parallel -a $heudiconv_subjlist $popts "$execpath/etc/defaceImages $output_dir {1} | tee -a $tuneup_log.{1}"
+fi
+
+
 echo "  Cleaning participants file (sorting, removing extra columns)..."
 $execpath/etc/cleanParticipantsFile $output_dir
 

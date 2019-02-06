@@ -7,6 +7,9 @@ ENV HEUDICONVTAG v0.5.3
 #bids validator version:
 ENV BIDSTAG 1.1.3
 
+#pydeface version:
+ENV PYDEFACETAG v1.1.0
+
 #from heudiconv Dockerfile (neurodocker):
 
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -138,6 +141,15 @@ RUN git clone https://github.com/bids-standard/bids-validator /opt/bids-validato
 
 #install gnu parallel
 RUN apt-get update &&  apt-get install -y parallel
+
+
+#install pydeface & deps, including FSL flirt (binary from dropbox)
+RUN apt-get update && apt-get install -y python-setuptools libxml2-dev libopenblas-dev wget && pip install pytest==3.6.0 networkx==2.0
+ENV FSLDIR /opt/fsl 
+RUN mkdir -p $FSLDIR/bin && cd $FSLDIR/bin && wget https://www.dropbox.com/s/3wf2i7eiosoi8or/flirt && chmod a+x $FSLDIR/bin/flirt
+ENV PATH $FSLDIR/bin:$PATH
+RUN cd /src && git clone https://github.com/poldracklab/pydeface && cd pydeface && git checkout $PYDEFACETAG && python setup.py install
+
 
 
 #need the below to avoid warnings when running gnu-parallel
