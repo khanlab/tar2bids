@@ -24,16 +24,17 @@ fi
         out_folder=sub-$subj
     fi
 
-    
     #get image to compute facemask (T1w)
-    defacetarget=`ls $out_folder/anat/*T1w.nii.gz 2>/dev/null | head -n 1`
+    defacetarget=`ls $in_bids/$out_folder/anat/*T1w.nii.gz 2>/dev/null | head -n 1`
     if [ ! -e $defacetarget ]
     then 
         echo "Defacing disabled since cannot find eligible T1w image"
     else
         #get images to apply to (anything but the prev image, or anything with deface)
-        echo "pydeface --verbose --force $defacetarget --applyto `ls $out_folder/*/*.nii.gz 2>/dev/null | grep -v $defacetarget | grep -v deface`"
-        pydeface --verbose --force $defacetarget --applyto `ls $out_folder/*/*.nii.gz 2>/dev/null | grep -v $defacetarget | grep -v deface`
+	echo "ls $in_bids/$out_folder/*/*.nii.gz 2>/dev/null | grep -v $defacetarget"	
+	other_imgs=`ls $in_bids/$out_folder/anat/*.nii.gz 2>/dev/null | grep -v $defacetarget`	
+	echo other_imgs $other_imgs
+        pydeface --verbose --force $defacetarget --applyto $other_imgs 
 
     fi
 

@@ -146,6 +146,7 @@ RUN apt-get update &&  apt-get install -y parallel
 #install pydeface & deps, including FSL flirt (binary from dropbox)
 RUN apt-get update && apt-get install -y python-setuptools libxml2-dev libopenblas-dev wget && pip install pytest==3.6.0 networkx==2.0
 ENV FSLDIR /opt/fsl 
+ENV FSLOUTPUTTYPE NIFTI_GZ
 RUN mkdir -p $FSLDIR/bin && cd $FSLDIR/bin && wget https://www.dropbox.com/s/3wf2i7eiosoi8or/flirt && chmod a+x $FSLDIR/bin/flirt
 ENV PATH $FSLDIR/bin:$PATH
 RUN cd /src && git clone https://github.com/poldracklab/pydeface && cd pydeface && git checkout $PYDEFACETAG && python setup.py install
