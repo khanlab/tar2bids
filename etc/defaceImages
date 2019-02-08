@@ -24,15 +24,35 @@ fi
         out_folder=sub-$subj
     fi
 
+
     #get image to compute facemask (T1w)
     defacetarget=`ls $in_bids/$out_folder/anat/*T1w.nii.gz 2>/dev/null | head -n 1`
-	other_imgs=`ls $in_bids/$out_folder/anat/*.nii.gz 2>/dev/null | grep -v $defacetarget`	
 
     if [ ! -e $defacetarget ]
     then 
         echo "Defacing disabled since cannot find eligible T1w image"
         exit 1
     fi
+
+    hash=`fslorient -getsform $defacetarget | cksum | cut -f 1 -d ' '`
+
+    #for now, just compute defacing once, and apply to all images with the same FOV
+
+    potential_imgs=`ls $in_bids/$out_folder/anat/*.nii.gz 2>/dev/null | grep -v $defacetarget`	
+    other_imgs=""
+
+    for pimg in $potential_imgs
+    do
+	#check hash against defacemask hash:
+    	phash=`fslorient -getsform $pimg | cksum | cut -f 1 -d ' '`
+	if [ "$hash" = "$phash" ]
+	then
+		other_imgs="$other_imgs $pimg"
+	fi
+
+    done
+    
+
 
     deface_args="--verbose --force $defacetarget"
 
