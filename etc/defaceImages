@@ -73,9 +73,9 @@ fi
     nodeface_dir=$in_bids/sourcedata/$out_folder/anat
     mkdir -p $nodeface_dir
 
-    for img in $in_bids/$out_folder/anat/*deface.nii.gz
+    for img in $in_bids/$out_folder/anat/*defaced.nii.gz
     do
-        im_prefix=${img%_deface.nii.gz}
+        im_prefix=${img%_defaced.nii.gz}
         in_img=${im_prefix}.nii.gz
         mv -v $in_img $nodeface_dir && mv -v $img $in_img
 
