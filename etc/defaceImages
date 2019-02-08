@@ -26,15 +26,39 @@ fi
 
     #get image to compute facemask (T1w)
     defacetarget=`ls $in_bids/$out_folder/anat/*T1w.nii.gz 2>/dev/null | head -n 1`
+	other_imgs=`ls $in_bids/$out_folder/anat/*.nii.gz 2>/dev/null | grep -v $defacetarget`	
+
     if [ ! -e $defacetarget ]
     then 
         echo "Defacing disabled since cannot find eligible T1w image"
-    else
-        #get images to apply to (anything but the prev image, or anything with deface)
-	echo "ls $in_bids/$out_folder/*/*.nii.gz 2>/dev/null | grep -v $defacetarget"	
-	other_imgs=`ls $in_bids/$out_folder/anat/*.nii.gz 2>/dev/null | grep -v $defacetarget`	
-	echo other_imgs $other_imgs
-        pydeface --verbose --force $defacetarget --applyto $other_imgs 
-
+        exit 1
     fi
+
+    deface_args="--verbose --force $defacetarget"
+
+    #if there are other_imgs
+    if [ -n "$other_imgs" ]
+    then
+        deface_args="$deface_args -applyto $other_imgs"
+    fi
+
+    
+    #2. perform defacing, all images then have _deface.nii.gz generated
+    echo pydeface $deface_args 
+    pydeface $deface_args 
+
+
+    #back-up existing, and move <prefix>_deface.nii.gz to <prefix>.nii.gz            #copy images to be defaced to:  sourcedata/no_deface/$out_folder/anat
+
+    nodeface_dir=$in_bids/sourcedata/$out_folder/anat
+    mkdir -p $nodeface_dir
+
+    for img in $in_bids/$out_folder/anat/*deface.nii.gz
+    do
+        im_prefix=${img%_deface.nii.gz}
+        in_img=${im_prefix}.nii.gz
+        mv -v $in_img $nodeface_dir && mv -v $img $in_img
+
+    done
+
 
