@@ -39,7 +39,7 @@ fi
     #if there are other_imgs
     if [ -n "$other_imgs" ]
     then
-        deface_args="$deface_args -applyto $other_imgs"
+        deface_args="$deface_args --applyto $other_imgs"
     fi
 
     
