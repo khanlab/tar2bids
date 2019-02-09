@@ -70,7 +70,7 @@ fi
 
     #back-up existing, and move <prefix>_deface.nii.gz to <prefix>.nii.gz            #copy images to be defaced to:  sourcedata/no_deface/$out_folder/anat
 
-    nodeface_dir=$in_bids/sourcedata/$out_folder/anat
+    nodeface_dir=$in_bids/sourcedata/no_defaced/$out_folder/anat
     mkdir -p $nodeface_dir
 
     for img in $in_bids/$out_folder/anat/*defaced.nii.gz
