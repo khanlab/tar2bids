@@ -20,6 +20,7 @@ function usage {
 	echo "	-w <tempdir>  (--tempdir in heudiconv)" 
 	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
 	echo "	-C : copy tarfiles to BIDS sourcedata folder" 
+	echo "  -D : enable defacing of T1w images : default will not deface"
 	echo ""
 	echo " Available heuristic files:"
 	for h in `ls ${heuristic_dir}/*.py`
@@ -41,11 +42,14 @@ tarfile_search=
 ncores=0
 tempdir=
 copytar=0
+do_deface=0
 
-while getopts "N:o:h:O:P:T:w:C" options; do
+while getopts "N:o:h:O:P:T:w:CD" options; do
  case $options in
     N ) echo "  Overriding number of cores: $OPTARG" >&2
 	ncores=$OPTARG;;
+    D ) echo "  Enabling deface of T1w images" >&2
+	do_deface=1;;
     o ) echo "	Overriding output dir as: $OPTARG" >&2
 	output_dir=`realpath $OPTARG`;;
     h ) echo "	Overriding heuristic file as: $OPTARG" >&2
@@ -296,7 +300,10 @@ fi
 fi
 
 
-echo "  Defacing images with pydeface..."
+if [ "$do_deface" = "1" ]
+then
+
+echo "  Defacing T1w images with pydeface... (if successful, will back-up non-defaced to sourcedata)"
 if [ -n "$sessid" ]
 then
 parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/defaceImages $output_dir {1} {2} | tee -a $tuneup_log.{1}.{2}"
@@ -304,6 +311,7 @@ else
 parallel -a $heudiconv_subjlist $popts "$execpath/etc/defaceImages $output_dir {1} | tee -a $tuneup_log.{1}"
 fi
 
+fi
 
 echo "  Cleaning participants file (sorting, removing extra columns)..."
 $execpath/etc/cleanParticipantsFile $output_dir
