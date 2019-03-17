@@ -112,7 +112,9 @@ mkdir $log_dir/logs
 heudi_log=$log_dir/logs/heudiconv
 tuneup_log=$log_dir/logs/tuneup
 heudiconv_subjlist=$log_dir/subj_args.txt
+heudiconv_subjlist_all=$log_dir/subj_args.all.txt
 heudiconv_sesslist=$log_dir/sess_args.txt
+heudiconv_sesslist_all=$log_dir/sess_args.all.txt
 dicomexpr_list=$log_dir/dicomexpr.txt
 
 heudi_opts="$heudi_opts --overwrite"
@@ -210,7 +212,10 @@ fi
 
 ##sort and remove duplicate entries in subjlist
 sort -u $heudiconv_subjlist_all -o $heudiconv_subjlist
+if [ -e $heudiconv_sesslist_all ]
+then
 sort -u $heudiconv_sesslist_all -o $heudiconv_sesslist
+fi
 sort -u $subjlist -o $subjlist
 
 
