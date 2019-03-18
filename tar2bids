@@ -112,7 +112,10 @@ mkdir $log_dir/logs
 heudi_log=$log_dir/logs/heudiconv
 tuneup_log=$log_dir/logs/tuneup
 heudiconv_subjlist=$log_dir/subj_args.txt
+heudiconv_subjlist_all=$log_dir/subj_args.all.txt
 heudiconv_sesslist=$log_dir/sess_args.txt
+heudiconv_sesslist_all=$log_dir/sess_args.all.txt
+dicomexpr_list=$log_dir/dicomexpr.txt
 
 heudi_opts="$heudi_opts --overwrite"
 
@@ -149,14 +152,19 @@ do
 	patient_etc=${date_etc##${date}_}
 	patient=${patient_etc%_[0-9]*.*}
 
+	suffix=${patient_etc##${patient}_}
+
+	
+
 	echo "  PI=$pi Study=$study Date=$date PatientName=$patient"
 	search="${pi}_${study}_${date}_${patientname_search}_[0-9]*.*.t*"
 	subjid=`$execpath/etc/getSubjSessID $patientname_search subject $patient`
 	sessid=`$execpath/etc/getSubjSessID $patientname_search session $patient`
     
     #expression for heudiconv
-    dicom_expr=$folder/${pi}_${study}_????????_${patientname_search}_?.????????.t*
-
+#    dicom_expr=$folder/${pi}_${study}_????????_${patientname_search}_?.????????.t*
+     dicom_expr=$folder/${pi}_${study}_${date}_${patientname_search}_${suffix}
+    echo $dicom_expr >> $dicomexpr_list
 	else
 	#if -s specified, then search in tarfile
     search="${tarfile_search}.t*"
@@ -165,6 +173,7 @@ do
     
     #expression for heudiconv
     dicom_expr=$folder/${tarfile_search}.t*
+    echo $dicom_expr >> $dicomexpr_list
 
 	fi
 	
@@ -185,11 +194,11 @@ do
 	#compile subjid list
 	if [ -n "$sessid" ]
 	then
-		echo "$subjid" >> $heudiconv_subjlist
-		echo "$sessid" >> $heudiconv_sesslist
+		echo "$subjid" >> $heudiconv_subjlist_all
+		echo "$sessid" >> $heudiconv_sesslist_all
 #	echo "-s $subjid -ss $sessid" >> $heudiconv_subjlist
 	else
-		echo "$subjid" >> $heudiconv_subjlist
+		echo "$subjid" >> $heudiconv_subjlist_all
 	fi
 	echo $subjid >> $subjlist
 
@@ -201,8 +210,12 @@ then
  exit 1
 fi
 
-#sort and remove duplicate entries in subjlist
-sort -u $heudiconv_subjlist -o $heudiconv_subjlist
+##sort and remove duplicate entries in subjlist
+sort -u $heudiconv_subjlist_all -o $heudiconv_subjlist
+if [ -e $heudiconv_sesslist_all ]
+then
+sort -u $heudiconv_sesslist_all -o $heudiconv_sesslist
+fi
 sort -u $subjlist -o $subjlist
 
 
@@ -221,11 +234,11 @@ if [ -n "$sessid" ]
 then
 
 
-parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {1} -ss {2} | tee $heudi_log.{1}.{2} "
+parallel --link -a $heudiconv_subjlist_all -a $heudiconv_sesslist_all -a $dicomexpr_list $popts  "heudiconv ${heudi_opts} -b -d {3} -o $output_dir -f $heuristic_file -s {1} -ss {2} | tee $heudi_log.{1}.{2} "
 
 else
 
-parallel -a $heudiconv_subjlist  $popts  "heudiconv ${heudi_opts} -b -d ${dicom_expr} -o $output_dir -f $heuristic_file -s {1}  | tee $heudi_log.{1}"
+parallel --link -a $heudiconv_subjlist_all  -a $dicomexpr_list $popts  "heudiconv ${heudi_opts} -b -d {2} -o $output_dir -f $heuristic_file -s {1}  | tee $heudi_log.{1}"
 
 fi
 
