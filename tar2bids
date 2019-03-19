@@ -96,7 +96,7 @@ code_dir=$output_dir/code
 sourcedata=$output_dir/sourcedata
 mkdir -p $code_dir $sourcedata
 
-datestring=`date +%Y-%m-%d_%Hh%Mm`
+datestring=`date +%Y-%m-%d_%Hh%Mm_$RANDOM`
 log_dir=$code_dir/tar2bids_$datestring
 if [ -e $log_dir ]
 then 
