@@ -16,8 +16,8 @@ print('multi-echo corrector')
 print(multiecho_dir)
 
 #puts all json and nifti files in the folder into lists
-json_files = sorted(glob.glob(multiecho_dir + "/*GRE?.json"))
-nifti_files = sorted(glob.glob(multiecho_dir + "/*GRE?.nii.gz"))
+json_files = sorted(glob.glob(multiecho_dir + "/*GRE[0-9]*.json"))
+nifti_files = sorted(glob.glob(multiecho_dir + "/*GRE[0-9]*.nii.gz"))
 print(json_files)
 print(nifti_files)
 for i,k in zip(json_files, nifti_files):
