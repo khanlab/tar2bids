@@ -47,7 +47,7 @@ for i,k in zip(json_files, nifti_files):
         print('renaming: '+i+' to '+js_changeEnding)
         os.rename(i, js_changeEnding)
         
-        ni_addEchoNum = re.sub("_echo", "_echo-" + str(echonum) + "_", k)
+        ni_addEchoNum = re.sub("_echo_", "_echo-" + str(echonum) + "_", k)
         ni_changeEnding = re.sub("bold.*", "bold.nii.gz", ni_addEchoNum)
         print('renaming: '+k+' to '+ni_changeEnding)
         os.rename(k, ni_changeEnding)
