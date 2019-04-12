@@ -27,13 +27,13 @@ for i,k in zip(json_files, nifti_files):
         data = json.load(data_file)
     
     #in the case of echo-1, the EchoNumber tag does not exist in the json file    
-    if ("EchoNumber" not in data) and ("_echo_" in i):
-        js_addEchoNum = re.sub("_echo_", "_echo-1_", i)
+    if ("EchoNumber" not in data) and ("_bold" in i):
+        js_addEchoNum = re.sub("_bold", "_echo-01_bold", i)
         js_changeEnding = re.sub("bold.*", "bold.json", js_addEchoNum)
         print('renaming: '+i+' to '+js_changeEnding)
         os.rename(i, js_changeEnding)
         
-        ni_addEchoNum = re.sub("_echo_", "_echo-1_", k)
+        ni_addEchoNum = re.sub("_bold", "_echo-01_bold", k)
         ni_changeEnding = re.sub("bold.*", "bold.nii.gz", ni_addEchoNum)
         print('renaming: '+k+' to '+ni_changeEnding)
         os.rename(k, ni_changeEnding)
@@ -42,12 +42,12 @@ for i,k in zip(json_files, nifti_files):
     elif "EchoNumber" in data:
         echonum = data["EchoNumber"]
         
-        js_addEchoNum = re.sub("_echo_", "_echo-" + str(echonum) + "_", i)
+        js_addEchoNum = re.sub("_bold", "_echo-" + str(echonum) + "_bold", i)
         js_changeEnding = re.sub("bold.*", "bold.json", js_addEchoNum)
         print('renaming: '+i+' to '+js_changeEnding)
         os.rename(i, js_changeEnding)
         
-        ni_addEchoNum = re.sub("_echo_", "_echo-" + str(echonum) + "_", k)
+        ni_addEchoNum = re.sub("_bold", "_echo-" + str(echonum) + "_bold", k)
         ni_changeEnding = re.sub("bold.*", "bold.nii.gz", ni_addEchoNum)
         print('renaming: '+k+' to '+ni_changeEnding)
         os.rename(k, ni_changeEnding)
