@@ -2,7 +2,7 @@ FROM neurodebian:xenial
 MAINTAINER <alik@robarts.ca>
 
 #heudiconv version:
-ENV HEUDICONVTAG v0.5.3
+ENV HEUDICONVTAG v0.5.4
 
 #bids validator version:
 ENV BIDSTAG 1.1.3
