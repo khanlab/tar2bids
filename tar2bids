@@ -341,7 +341,7 @@ fi
 
 fi
 
-echo "  Cleaning participants file (sorting, removing extra columns)..."
+echo "  Cleaning participants and other tsv files (sorting, removing extra columns)..."
 $execpath/etc/cleanParticipantsFile $output_dir
 
 echo "  Adding default .bidsignore file..."
