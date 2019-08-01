@@ -136,8 +136,7 @@ RUN apt-get update && \
 RUN git clone https://github.com/bids-standard/bids-validator /opt/bids-validator && \
     cd /opt/bids-validator && \
     git checkout $BIDSTAG && \
-    sed -i -E "s/0.0.0/$BIDSTAG/" package.json && \
-    npm install -g /opt/bids-validator
+    npm install -g /opt/bids-validator/bids-validator
 
 #install gnu parallel
 RUN apt-get update &&  apt-get install -y parallel
