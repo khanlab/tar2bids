@@ -40,8 +40,8 @@ RUN export ND_ENTRYPOINT="/neurodocker/startup.sh" \
     fi \
     && chmod -R 777 /neurodocker && chmod a+s /neurodocker
 
-ENV DCM2NIIX_DATE=20190720
-ENV DCM2NIIX_TAG="v1.0.20190720"
+ENV DCM2NIIX_DATE=20190410
+ENV DCM2NIIX_TAG="v1.0.20190410"
 
 ENV PATH="/opt/dcm2niix-v1.0.${DCM2NIIX_DATE}/bin:$PATH"
 RUN apt-get update -qq \
