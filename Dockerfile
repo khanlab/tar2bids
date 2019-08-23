@@ -20,12 +20,12 @@ ENV LANG="en_US.UTF-8" \
 RUN export ND_ENTRYPOINT="/neurodocker/startup.sh" \
     && apt-get update -qq \
     && apt-get install -y -q --no-install-recommends \
-           apt-utils \
-           bzip2 \
-           ca-certificates \
-           curl \
-           locales \
-           unzip \
+    apt-utils \
+    bzip2 \
+    ca-certificates \
+    curl \
+    locales \
+    unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
@@ -34,28 +34,32 @@ RUN export ND_ENTRYPOINT="/neurodocker/startup.sh" \
     && chmod 777 /opt && chmod a+s /opt \
     && mkdir -p /neurodocker \
     && if [ ! -f "$ND_ENTRYPOINT" ]; then \
-         echo '#!/usr/bin/env bash' >> "$ND_ENTRYPOINT" \
+    echo '#!/usr/bin/env bash' >> "$ND_ENTRYPOINT" \
     &&   echo 'set -e' >> "$ND_ENTRYPOINT" \
     &&   echo 'if [ -n "$1" ]; then "$@"; else /usr/bin/env bash; fi' >> "$ND_ENTRYPOINT"; \
     fi \
     && chmod -R 777 /neurodocker && chmod a+s /neurodocker
 
-ENV DCM2NIIX_DATE=20190410
-ENV DCM2NIIX_TAG="v1.0.20190410"
+#ENV DCM2NIIX_DATE=20190410
+#ENV DCM2NIIX_TAG="v1.0.20190410"
+
+ENV DCM2NIIX_DATE=20190720_khanlab
+ENV DCM2NIIX_TAG="v1.0.20190720_khanlab"
 
 ENV PATH="/opt/dcm2niix-v1.0.${DCM2NIIX_DATE}/bin:$PATH"
 RUN apt-get update -qq \
     && apt-get install -y -q --no-install-recommends \
-           cmake \
-           g++ \
-           gcc \
-           git \
-           make \
-           pigz \
-           zlib1g-dev \
+    cmake \
+    g++ \
+    gcc \
+    git \
+    make \
+    pigz \
+    zlib1g-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && git clone https://github.com/rordenlab/dcm2niix /tmp/dcm2niix \
+    #&& git clone https://github.com/rordenlab/dcm2niix /tmp/dcm2niix \
+    && git clone https://github.com/yinglilu/dcm2niix.git /tmp/dcm2niix \
     && cd /tmp/dcm2niix \
     && git fetch --tags \
     && git checkout $DCM2NIIX_TAG \
@@ -68,12 +72,12 @@ RUN apt-get update -qq \
 
 RUN apt-get update -qq \
     && apt-get install -y -q --no-install-recommends \
-           git \
-           gcc \
-           pigz \
-           liblzma-dev \
-           libc-dev \
-           git-annex-standalone \
+    git \
+    gcc \
+    pigz \
+    liblzma-dev \
+    libc-dev \
+    git-annex-standalone \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -101,16 +105,16 @@ RUN export PATH="/opt/miniconda-latest/bin:$PATH" \
     && conda config --system --set show_channel_urls true \
     && sync && conda clean -tipsy && sync \
     && conda install -y -q --name base \
-           python=3.6 \
-           traits>=4.6.0 \
-           scipy \
-           numpy \
-           nomkl \
+    python=3.6 \
+    traits>=4.6.0 \
+    scipy \
+    numpy \
+    nomkl \
     && sync && conda clean -tipsy && sync \
     && bash -c "source activate base \
     &&  pip install pydicom dcmstack nipype nibabel && \
-	pip install --no-cache-dir --editable \
-             /src/heudiconv[all]" \
+    pip install --no-cache-dir --editable \
+    /src/heudiconv[all]" \
     && rm -rf ~/.cache/pip/* \
     && sync
 
