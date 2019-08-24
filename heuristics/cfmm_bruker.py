@@ -36,7 +36,11 @@ def infotodict(seqinfo):
     MP2RAGE_UNI_l = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-LoResUNI_run-{item:02d}_T1w')
 
 
-    info = { FLASH_T1:[],FLASH_MT_ON:[],FLASH_MT_OFF:[],dwi:[],MP2RAGE_T1map:[],MP2RAGE_invs:[],MP2RAGE_UNI:[],MP2RAGE_T1map_l:[],MP2RAGE_invs_l:[],MP2RAGE_UNI_l:[]}
+    MEGRE_mag = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_part-mag_echo_run-{item:02d}_GRE')
+    MEGRE_complex = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_part-complex_echo_run-{item:02d}_GRE')
+
+
+    info = { FLASH_T1:[],FLASH_MT_ON:[],FLASH_MT_OFF:[],dwi:[],MP2RAGE_T1map:[],MP2RAGE_invs:[],MP2RAGE_UNI:[],MP2RAGE_T1map_l:[],MP2RAGE_invs_l:[],MP2RAGE_UNI_l:[],MEGRE_mag:[],MEGRE_complex:[]}
 
     for idx, s in enumerate(seqinfo):
 
@@ -69,6 +73,11 @@ def infotodict(seqinfo):
             else:
                 info[MP2RAGE_UNI_l].append({'item': s.series_id})
 
+        elif ('T2star' in s.series_description.strip()):
+            if (s.dim3 == 2 and s.dim4 < 12): #to cover the case when dim3=2 could refer to 2 echos, instead of real/imag..
+                info[MEGRE_complex].append({'item': s.series_id})
+            else:
+                info[MEGRE_mag].append({'item': s.series_id})
 
    
     return info
