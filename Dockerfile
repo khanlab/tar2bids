@@ -54,8 +54,7 @@ RUN apt-get update -qq \
            zlib1g-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && git clone https://github.com/yinglilu/dcm2niix/tree/v1.0.20190720_khanlab_hotfix
- /tmp/dcm2niix \
+    && git clone https://github.com/yinglilu/dcm2niix/tree/v1.0.20190720_khanlab_hotfix /tmp/dcm2niix \
     && cd /tmp/dcm2niix \
     && mkdir /tmp/dcm2niix/build \
     && cd /tmp/dcm2niix/build \
