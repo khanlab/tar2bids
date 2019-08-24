@@ -40,8 +40,7 @@ RUN export ND_ENTRYPOINT="/neurodocker/startup.sh" \
     fi \
     && chmod -R 777 /neurodocker && chmod a+s /neurodocker
 
-ENV DCM2NIIX_DATE=20190410
-ENV DCM2NIIX_TAG="v1.0.20190410"
+ENV DCM2NIIX_DATE=20190720_khanlab_hotfix
 
 ENV PATH="/opt/dcm2niix-v1.0.${DCM2NIIX_DATE}/bin:$PATH"
 RUN apt-get update -qq \
@@ -55,10 +54,9 @@ RUN apt-get update -qq \
            zlib1g-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && git clone https://github.com/rordenlab/dcm2niix /tmp/dcm2niix \
+    && git clone https://github.com/yinglilu/dcm2niix/tree/v1.0.20190720_khanlab_hotfix
+ /tmp/dcm2niix \
     && cd /tmp/dcm2niix \
-    && git fetch --tags \
-    && git checkout $DCM2NIIX_TAG \
     && mkdir /tmp/dcm2niix/build \
     && cd /tmp/dcm2niix/build \
     && cmake  -DCMAKE_INSTALL_PREFIX:PATH=/opt/dcm2niix-v1.0.${DCM2NIIX_DATE} .. \
