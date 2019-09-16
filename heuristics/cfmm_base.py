@@ -544,7 +544,7 @@ def infotodict(seqinfo):
                 info[DIS3D_spc_FLAIR].append({'item': s.series_id})
 
         #TOF angio
-        if ('3D_TOF' in s.series_description): 
+        if ('3D_TOF' in s.series_description or 'tof_fl3d' in s.series_description): 
             if (s.dim3>1):
                 if ('ND' in (s.image_type[3].strip())):
                     info[TOF_angio] = [s.series_id]
