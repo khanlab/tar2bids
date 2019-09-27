@@ -243,21 +243,6 @@ parallel --link -a $heudiconv_subjlist_all  -a $dicomexpr_list $popts  "heudicon
 fi
 
 
-if [ -n "$sessid" ]
-then
-
-#update dicominfo.tsv with header line
-for tsv in `ls $output_dir/.heudiconv/*/*/info/dicominfo*tsv`
-do
- tsv_new=$tsv.new 
- cat $execpath/etc/dicominfo_hdr.tsv > $tsv_new
- cat $tsv >> $tsv_new
- mv $tsv_new $tsv
-done
-
-else
-
-fi
 
 echo "  Moving hidden .heudiconv folder to $heudiconv_out"
 mv $output_dir/.heudiconv $heudiconv_out
