@@ -485,8 +485,9 @@ def infotodict(seqinfo):
                 info[dwi_sbref].append({'item': s.series_id})
 
     
-        if (('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip()) and 'UFA' in s.series_description):
-            info[dwi_ufa].append({'item': s.series_id})
+        if ('UFA' in s.series_description ):
+            if (('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip())):
+                info[dwi_ufa].append({'item': s.series_id})
             
         #susceptibility ND multiecho
         if ('susc' in s.series_description or 'gre3d' in s.series_description or 't1_fl3d_p4_iso' in s.series_description ):
