@@ -133,6 +133,10 @@ def infotodict(seqinfo):
     dwi = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_run-{item:02d}_dwi')
     dwi_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_run-{item:02d}_sbref')
 
+    #uFA
+    dwi_ufa = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-uFA_run-{item:02d}_dwi')
+    dwi_ogse = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_run-{item:02d}_ogse')
+
     #Field Maps:
 
     #GRE phase diff 
@@ -256,7 +260,7 @@ def infotodict(seqinfo):
          pd_t2_tse_tra:[], DIS2D_pd_t2_tse_tra:[], DIS3D_pd_t2_tse_tra:[],
          pd_t2_tse_cor:[], DIS2D_pd_t2_tse_cor:[], DIS3D_pd_t2_tse_cor:[],
 
-         dwi:[],dwi_sbref:[],
+         dwi:[],dwi_sbref:[],dwi_ufa:[],dwi_ogse:[],
          fmap_diff:[],fmap_magnitude:[],
          dir_t2:[], DIS2D_dir_t2:[]}
 
@@ -471,12 +475,20 @@ def infotodict(seqinfo):
                     info[fmap_magnitude].append({'item': s.series_id})
 
         #dwi
-        if ('diff' in s.protocol_name or 'DWI' in s.series_description  or 'DTI' in s.series_description ):
-            if ( s.dim4 > 1 and ('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip()) ):
-                info[dwi].append({'item': s.series_id})
-            if ( s.dim4 == 1  and 'SBRef' in (s.series_description).strip() ) :
+        if ('diff' in s.protocol_name or 'DWI' in s.series_description  or 'DTI' in s.series_description or 'diff' in s.series_description ):
+            if (('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip())):
+                if ('cb_ep2d_diff_C26' in s.series_description):
+                    info[dwi_ogse].append({'item': s.series_id})
+                else:
+                    info[dwi].append({'item': s.series_id})
+            elif ( s.dim4 == 1  and 'SBRef' in (s.series_description).strip() ) :
                 info[dwi_sbref].append({'item': s.series_id})
 
+    
+        if ('UFA' in s.series_description ):
+            if (('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip())):
+                info[dwi_ufa].append({'item': s.series_id})
+            
         #susceptibility ND multiecho
         if ('susc' in s.series_description or 'gre3d' in s.series_description or 't1_fl3d_p4_iso' in s.series_description ):
             if ('M' in (s.image_type[2].strip())):
@@ -527,15 +539,16 @@ def infotodict(seqinfo):
 
         #spc T2w
         if ('spc_T2' in s.series_description or 'T2w_SPC' in s.series_description or 'T2w_space' in s.series_description or 't2_space' in s.series_description or 't2_spc' in s.series_description ): 
-            if ('ND' in (s.image_type[3].strip())):
-                info[spc_T2w].append({'item': s.series_id})
-            if ('DIS2D' in (s.image_type[3].strip())):
-                info[DIS2D_spc_T2w].append({'item': s.series_id})
-            if ('DIS3D' in (s.image_type[3].strip())):
-                info[DIS3D_spc_T2w].append({'item': s.series_id})
+            if ('dark-fluid' not in s.series_description ):
+                if ('ND' in (s.image_type[3].strip())):
+                    info[spc_T2w].append({'item': s.series_id})
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_spc_T2w].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_spc_T2w].append({'item': s.series_id})
     
         #spc T2w
-        if ('spc_flair' in s.series_description ): 
+        if ('spc_flair' in s.series_description or 'space_dark-fluid' in s.series_description): 
             if ('ND' in (s.image_type[3].strip())):
                 info[spc_FLAIR].append({'item': s.series_id})
             if ('DIS2D' in (s.image_type[3].strip())):
