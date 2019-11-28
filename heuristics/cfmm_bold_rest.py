@@ -59,7 +59,7 @@ def infotodict(seqinfo):
                     info[movie].append({'item': s.series_id})
 
         
-        elif ('bold' in s.protocol_name or 'resting_state' in s.series_description or 'mbep2d' in (s.series_description).strip() or 'ep_bold' in (s.series_description).strip() and not ('diff' in s.protocol_name or 'DWI' in s.series_description )):
+        elif ('bold' in s.protocol_name or 'resting_state' in s.series_description or 'mbep2d' in (s.series_description).strip() or 'ep_bold' in (s.series_description).strip() and not ( 'DIFFUSION' in s.image_type[2].strip())):
             
             if ('SBRef' in (s.series_description).strip()):
                 if ('PA' in (s.series_description).strip()):
