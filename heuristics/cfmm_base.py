@@ -474,13 +474,14 @@ def infotodict(seqinfo):
                     info[fmap_magnitude].append({'item': s.series_id})
 
         #dwi
-        if (('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip())):
-            if ('cb_ep2d_diff_C26' in s.series_description):
-                info[dwi_ogse].append({'item': s.series_id})
-            elif ('UFA' in s.series_description ):
-                info[dwi_ufa].append({'item': s.series_id})
-            else:
-                info[dwi].append({'item': s.series_id})
+        if len(s.image_type) > 2 :
+            if (('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip())):
+                if ('cb_ep2d_diff_C26' in s.series_description):
+                    info[dwi_ogse].append({'item': s.series_id})
+                elif ('UFA' in s.series_description ):
+                    info[dwi_ufa].append({'item': s.series_id})
+                else:
+                    info[dwi].append({'item': s.series_id})
 
     
             
