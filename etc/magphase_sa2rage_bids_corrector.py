@@ -30,11 +30,11 @@ for js,ni in zip(json_files, nifti_files):
     #get SA2RAGE number
     m=re.findall("(\d{1,2})(?:\.json)",js)
     if ( int(m[0]) % 2 == 0):
-            js_renameComplex = re.sub("_inv-","_part-mag_inv-",js)
-            ni_renameComplex = re.sub("_inv-","_part-mag_inv-",ni)
-    else:
             js_renameComplex = re.sub("_inv-","_part-phase_inv-",js)
             ni_renameComplex = re.sub("_inv-","_part-phase_inv-",ni)
+    else:
+            js_renameComplex = re.sub("_inv-","_part-mag_inv-",js)
+            ni_renameComplex = re.sub("_inv-","_part-mag_inv-",ni)
     js_changeEnding = re.sub("SA2RAGE.*", "SA2RAGE.json", js_renameComplex)
     ni_changeEnding = re.sub("SA2RAGE.*", "SA2RAGE.nii.gz", ni_renameComplex)
 
