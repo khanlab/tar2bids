@@ -53,14 +53,15 @@ def infotodict(seqinfo):
        
         #rs func (incl opp phase enc)
         if len(s.image_type) > 2 :
-            if ('Movie' in (s.series_description).strip()):
+            if ( 'DIFFUSION' in s.image_type[2].strip() ):
+                continue
+            elif ('Movie' in (s.series_description).strip()):
                 if (s.dim4==1 and  'SBRef' in (s.series_description).strip()):
                     info[movie_sbref].append({'item': s.series_id})
                 elif (s.dim4>1):
                     info[movie].append({'item': s.series_id})
 
-        
-            elif ('bold' in s.protocol_name or 'resting_state' in s.series_description or 'mbep2d' in (s.series_description).strip() or 'ep_bold' in (s.series_description).strip() and not ( 'DIFFUSION' in s.image_type[2].strip() )):
+            elif ('bold' in s.protocol_name or 'resting_state' in s.series_description or 'mbep2d' in (s.series_description).strip() or 'ep_bold' in (s.series_description).strip() ):
             
                 if ('SBRef' in (s.series_description).strip()):
                        info[rest_sbref].append({'item': s.series_id})
@@ -83,7 +84,6 @@ def infotodict(seqinfo):
 #                            info[pilot_psf].append({'item': s.series_id})
 #                    else:
 #                        info[pilot].append({'item': s.series_id})
-
                 else: # greater than 1 timepoint:
                     if ('mi_ep2d' in (s.series_description).strip() ):
                         if ('DICO'  in (s.image_type[4].strip())):
