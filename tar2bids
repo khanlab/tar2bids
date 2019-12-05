@@ -20,8 +20,7 @@ function usage {
 	echo "	-w <tempdir>  (--tempdir in heudiconv)" 
 	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
 	echo "	-C : copy tarfiles to BIDS sourcedata folder" 
-	echo "  -D : enable defacing of T1w images : default will not deface"
-	echo "  -x : run dcm2niix without any heuristics, files placed in OUTPUT/sourcedata/dcm2niix/"
+	echo "	-D : enable defacing of T1w images : default will not deface"
 	echo ""
 	echo " Available heuristic files:"
 	for h in `ls ${heuristic_dir}/*.py`
@@ -44,9 +43,12 @@ ncores=0
 tempdir=
 copytar=0
 do_deface=0
-do_dcm2niix=0
 
-while getopts "N:o:h:O:P:T:w:CDx" options; do
+# doing heuristic-free conversion is now the default, 
+# since access to the corresponding dicoms is needed for bruker tune-up
+do_dcm2niix=1
+
+while getopts "N:o:h:O:P:T:w:CD" options; do
  case $options in
     N ) echo "  Overriding number of cores: $OPTARG" >&2
 	ncores=$OPTARG;;
@@ -66,8 +68,6 @@ while getopts "N:o:h:O:P:T:w:CDx" options; do
     tempdir=$OPTARG;;
     C ) echo "  Copying source tarfiles to sourcedata" >&2
     copytar=1;;
-    x ) echo "  Running dcm2niix with no heuristics" >&2
-    do_dcm2niix=1;;
 
    * ) usage
 	exit 1;;
@@ -144,7 +144,7 @@ do
 	folder=`realpath $(dirname $tar)`
 	
 	#do_dcm2niix 
-	if [ "$do_dcm2niix" = 1 ]
+	if [ "$do_dcm2niix" = 1 ] #this is always enabled now
 	then
 
 		if [ -n "$tempdir" ]
@@ -160,8 +160,6 @@ do
 		#extract tar file 
 		tar -C $dcm_dir -xvf $tar 
 		dcm2niix -o $nii_dir -d 10 $dcm_dir
-		#remove dcm_dir
-		echo rm -rf $tempdir 
 	fi
 
 
