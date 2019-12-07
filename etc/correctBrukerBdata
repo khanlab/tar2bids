@@ -1,0 +1,57 @@
+#!/bin/bash
+
+if [ "$#" -lt 2 ]
+then
+    echo "Usage: $0 <in_bids> <in_tar_file> <subj ID> <session id (optional)>"
+	exit 1
+fi 
+in_bids=$1
+in_tar=$2
+
+#assumes python script is in same folder as this wrapper -- eventually just replace this..
+exec_path=`dirname $0`
+
+subj=$3
+subj=${subj##sub-} #strip off sub- if it exists, to make consistent
+
+if [ "$#" -gt 3 ]
+then
+    ses=$4
+	ses=${ses##ses-} #strip off sub- if it exists, to make consistent
+fi
+ 
+
+
+	if [ -n "$ses" ]
+    then
+        out_folder=sub-$subj/ses-$ses
+    else
+        out_folder=sub-$subj
+    fi
+
+    	#find dwi nifti images that don't have corresponding bvec
+	for dwi_nii in `ls $in_bids/$out_folder/dwi/*_dwi.nii.gz`
+	do
+		if [ -e ${dwi_nii%.nii.gz}.bvec ]
+		then
+			continue
+		fi
+	
+
+    		#look at json of that image, to find the series number
+		dwi_json=${dwi_nii%.nii.gz}.json
+		seriesnum=`grep SeriesNumber $dwi_json`
+		seriesnum=${seriesnum%,}
+		seriesnum=${seriesnum##*:\ }
+
+
+		#get matching dcm file from tar
+		out_dicom=${dwi_nii%.nii.gz}.dcm
+		tar -xf $in_tar  --wildcards */${seriesnum}/* --to-stdout > $out_dicom
+		#now get bmat, bvec, bvals from dcm
+		python $exec_path/getBrukerBdataFromDicoms.py $out_dicom
+
+	done
+
+
+

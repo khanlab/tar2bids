@@ -283,6 +283,8 @@ Nbold=`ls $output_dir/sub-*/ses-*/func/*bold?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/ses-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
 Nsa2rage_complex=`ls $output_dir/sub-*/ses-*/fmap/*SA2RAGE?.nii.gz 2>/dev/null | wc -l`
 Nmp2rage=`ls $output_dir/sub-*/ses-*/anat/*MP2RAGE.nii.gz 2>/dev/null | wc -l`
+Ndwi=`ls $output_dir/sub-*/ses-*/dwi/*dwi.nii.gz 2>/dev/null | wc -l`
+Nbvec=`ls $output_dir/sub-*/ses-*/dwi/*dwi.bvec 2>/dev/null | wc -l`
 else
 #check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
 Nfmaps=`ls $output_dir/sub-*/fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
@@ -291,6 +293,8 @@ Nbold=`ls $output_dir/sub-*/func/*bold?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
 Nsa2rage_complex=`ls $output_dir/sub-*/fmap/*SA2RAGE?.nii.gz 2>/dev/null | wc -l`
 Nmp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE.nii.gz 2>/dev/null | wc -l`
+Ndwi=`ls $output_dir/sub-*/dwi/*dwi.nii.gz 2>/dev/null | wc -l`
+Nbvec=`ls $output_dir/sub-*/dwi/*dwi.bvec 2>/dev/null | wc -l`
 fi
 
 
@@ -342,15 +346,19 @@ then
 echo " Running script to compute UNI-DEN from UNI & inversions (if it doesn't exist already)"
 if [ -n "$sessid" ]
 then
-
 parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctUniDen $output_dir {1} {2} | tee -a $tuneup_log.{1}.{2}"
 else
 parallel -a $heudiconv_subjlist $popts "$execpath/etc/correctUniDen $output_dir {1} | tee -a $tuneup_log.{1}"
 fi
 
+fi
 
-
-
+#if number of dwi != number of bvec files, then we are most likely dealing with bruker dwi, use custom script to extract bvec
+if [ ! "$Ndwi" = "$Nbvec" ]
+then
+parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctBrukerBdata $output_dir $tar {1} {2} | tee -a $tuneup_log.{1}.{2}"
+else
+parallel -a $heudiconv_subjlist $popts "$execpath/etc/correctBrukerBdata $output_dir $tar {1} | tee -a $tuneup_log.{1}"
 fi
 
 if [ "$do_deface" = "1" ]

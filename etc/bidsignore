@@ -33,3 +33,8 @@
 */dwi/*_ogse.*
 */*/dwi/*_ogse.*
 
+#bmat, dcm for Bruker
+*/dwi/*.dcm
+*/dwi/*.bmat
+*/*/dwi/*.dcm
+*/*/dwi/*.bmat
