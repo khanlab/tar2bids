@@ -356,9 +356,14 @@ fi
 #if number of dwi != number of bvec files, then we are most likely dealing with bruker dwi, use custom script to extract bvec
 if [ ! "$Ndwi" = "$Nbvec" ]
 then
+
+echo " Running bvac/bval/bmat generation for Bruker data"
+if [ -n "$sessid" ]
+then
 parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctBrukerBdata $output_dir $tar {1} {2} | tee -a $tuneup_log.{1}.{2}"
 else
 parallel -a $heudiconv_subjlist $popts "$execpath/etc/correctBrukerBdata $output_dir $tar {1} | tee -a $tuneup_log.{1}"
+fi
 fi
 
 if [ "$do_deface" = "1" ]
