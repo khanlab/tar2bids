@@ -25,7 +25,7 @@ def infotodict(seqinfo):
     FLASH_T1 = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-T1_run-{item:02d}_FLASH')
     FLASH_MT_ON = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MTon_run-{item:02d}_FLASH')
     FLASH_MT_OFF = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MToff_run-{item:02d}_FLASH')
-    dwi = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-T1_run-{item:02d}_dwi')
+    dwi = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_run-{item:02d}_dwi')
 
     MP2RAGE_T1map = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MP2RAGE_run-{item:02d}_T1map')
     MP2RAGE_invs = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-Inversions_run-{item:02d}_MP2RAGE')
@@ -40,7 +40,9 @@ def infotodict(seqinfo):
     MEGRE_complex = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_part-complex_echo_run-{item:02d}_GRE')
 
 
-    info = { FLASH_T1:[],FLASH_MT_ON:[],FLASH_MT_OFF:[],dwi:[],MP2RAGE_T1map:[],MP2RAGE_invs:[],MP2RAGE_UNI:[],MP2RAGE_T1map_l:[],MP2RAGE_invs_l:[],MP2RAGE_UNI_l:[],MEGRE_mag:[],MEGRE_complex:[]}
+    T2_TurboRARE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TurboRARE_run-{item:02d}_T2w')
+
+    info = { FLASH_T1:[],FLASH_MT_ON:[],FLASH_MT_OFF:[],dwi:[],MP2RAGE_T1map:[],MP2RAGE_invs:[],MP2RAGE_UNI:[],MP2RAGE_T1map_l:[],MP2RAGE_invs_l:[],MP2RAGE_UNI_l:[],MEGRE_mag:[],MEGRE_complex:[],T2_TurboRARE:[]}
 
     for idx, s in enumerate(seqinfo):
 
@@ -78,6 +80,9 @@ def infotodict(seqinfo):
                 info[MEGRE_complex].append({'item': s.series_id})
             else:
                 info[MEGRE_mag].append({'item': s.series_id})
+        elif ( 'T2_TurboRARE' in s.series_description.strip()):
+            info[T2_TurboRARE].append({'item': s.series_id})
+
 
    
     return info
