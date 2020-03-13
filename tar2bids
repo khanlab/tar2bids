@@ -185,8 +185,8 @@ do
 	#########
 	#Why:
 	#  original '#patient=${patient_etc%_[0-9]*.*}' was designed for parse `PatientName` from
-        #    PI_project_studydate_PatientName_x.hashcode.tar (mostly CFMM 3T, 7T scan)
-        #  as for
+	#    PI_project_studydate_PatientName_x.hashcode.tar (mostly CFMM 3T, 7T scan)
+	#  as for
 	#    PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
 	#  It will parse `PatientName` to
 	#    PatientName_StudyDate
@@ -204,20 +204,20 @@ do
 	#PI_project_studydate_PatientName_x.hashcode.tar
 	#  x is studyID, for instance 1
 	if [[ $patient_etc == *_[0-9].*.tar ]]; then
-		patient=${patient_etc%_[0-9].*.tar}
+	    patient=${patient_etc%_[0-9].*.tar}
 	fi
 
-        #PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
+	#PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
 	#  StudyDate: for instance, 20190101
 	#  xy is StudyID, for instance, 01
 	if [[ $patient_etc == *_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.tar ]]; then
-		patient=${patient_etc%_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.tar}
+	    patient=${patient_etc%_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.tar}
 	fi
 
 	# if $patient is empty, skip it.
 	if [ -z $patient ]; then
-		echo "Error: can not parse subject name in " $filename " skipped!"
-		continue
+	    echo "Error: can not parse subject name in " $filename " skipped!"
+	    continue
 	fi
 
 	suffix=${patient_etc##${patient}_}
