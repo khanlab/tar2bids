@@ -177,11 +177,51 @@ do
 	date=${date_etc%%_*}
 
 	patient_etc=${date_etc##${date}_}
-	patient=${patient_etc%_[0-9]*.*}
+	#original
+	#patient=${patient_etc%_[0-9]*.*}
+	
+	#########
+	#yingli:
+	#########
+	#Why:
+	#  original '#patient=${patient_etc%_[0-9]*.*}' was designed for parse `PatientName` from
+        #    PI_project_studydate_PatientName_x.hashcode.tar (mostly CFMM 3T, 7T scan)
+        #  as for
+	#    PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
+	#  It will parse `PatientName` to
+	#    PatientName_StudyDate
+	#
+	#  for details/discussion:
+	#    https://github.com/khanlab/tar2bids/issues/13
+	#
+	#New:
+	#  Parse `PatientName` given both filename:
+	#    PI_project_studydate_PatientName_x.hashcode.tar (mostly CFMM 3T, 7T scan)
+	#    PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
+	
+	patient=''
+
+	#PI_project_studydate_PatientName_x.hashcode.tar
+	#  x is studyID, for instance 1
+	if [[ $patient_etc == *_[0-9].*.tar ]]; then
+		patient=${patient_etc%_[0-9].*.tar}
+	fi
+
+        #PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
+	#  StudyDate: for instance, 20190101
+	#  xy is StudyID, for instance, 01
+	if [[ $patient_etc == *_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.tar ]]; then
+		patient=${patient_etc%_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.tar}
+	fi
+
+	# if $patient is empty, skip it.
+	if [ -z $patient ]; then
+		echo "Error: can not parse subject name in " $filename " skipped!"
+		continue
+	fi
 
 	suffix=${patient_etc##${patient}_}
 
-	
 
 	echo "  PI=$pi Study=$study Date=$date PatientName=$patient"
 	search="${pi}_${study}_${date}_${patientname_search}_[0-9]*.*.t*"
