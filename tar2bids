@@ -20,7 +20,8 @@ function usage {
 	echo "	-w <tempdir>  (--tempdir in heudiconv)" 
 	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
 	echo "	-C : copy tarfiles to BIDS sourcedata folder" 
-	echo "  -D : enable defacing of T1w images : default will not deface"
+	echo "	-D : enable defacing of T1w images : default will not deface"
+	echo "	-x : run dcm2niix without any heuristics, files placed in OUTPUT/sourcedata/dcm2niix/"
 	echo ""
 	echo " Available heuristic files:"
 	for h in `ls ${heuristic_dir}/*.py`
@@ -43,8 +44,9 @@ ncores=0
 tempdir=
 copytar=0
 do_deface=0
+do_dcm2niix=0
 
-while getopts "N:o:h:O:P:T:w:CD" options; do
+while getopts "N:o:h:O:P:T:w:CDx" options; do
  case $options in
     N ) echo "  Overriding number of cores: $OPTARG" >&2
 	ncores=$OPTARG;;
@@ -64,6 +66,9 @@ while getopts "N:o:h:O:P:T:w:CD" options; do
     tempdir=$OPTARG;;
     C ) echo "  Copying source tarfiles to sourcedata" >&2
     copytar=1;;
+    x ) echo "  Running dcm2niix with no heuristics" >&2
+    do_dcm2niix=1;;
+
 
    * ) usage
 	exit 1;;
@@ -139,6 +144,28 @@ do
 
 	folder=`realpath $(dirname $tar)`
 	
+	#do_dcm2niix 
+	if [ "$do_dcm2niix" = 1 ] 
+	then
+
+		if [ -n "$tempdir" ]
+		then
+			dcm_dir=$tempdir/temp_dicoms_$RANDOM
+		else
+			dcm_dir=/tmp/temp_dicoms_$RANDOM
+		fi
+
+		nii_dir=$sourcedata/dcm2niix/${filename%.tar*}
+
+		mkdir -p $dcm_dir $nii_dir
+		#extract tar file 
+		tar -C $dcm_dir -xvf $tar 
+		dcm2niix -o $nii_dir -d 10 $dcm_dir
+		rm -rf $dcm_dir
+	fi
+
+
+
 	#default, search for subjid in PatientName
 	if [ ! -n "$tarfile_search" ]
 	then
@@ -150,11 +177,51 @@ do
 	date=${date_etc%%_*}
 
 	patient_etc=${date_etc##${date}_}
-	patient=${patient_etc%_[0-9]*.*}
+	#original
+	#patient=${patient_etc%_[0-9]*.*}
+	
+	#########
+	#yingli:
+	#########
+	#Why:
+	#  original '#patient=${patient_etc%_[0-9]*.*}' was designed for parse `PatientName` from
+	#    PI_project_studydate_PatientName_x.hashcode.tar (mostly CFMM 3T, 7T scan)
+	#  as for
+	#    PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
+	#  It will parse `PatientName` to
+	#    PatientName_StudyDate
+	#
+	#  for details/discussion:
+	#    https://github.com/khanlab/tar2bids/issues/13
+	#
+	#New:
+	#  Parse `PatientName` given both filename:
+	#    PI_project_studydate_PatientName_x.hashcode.tar (mostly CFMM 3T, 7T scan)
+	#    PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
+	
+	patient=''
+
+	#PI_project_studydate_PatientName_x.hashcode.tar
+	#  x is studyID, for instance 1
+	if [[ $patient_etc == *_[0-9].*.* ]]; then
+	    patient=${patient_etc%_[0-9].*.*}
+	fi
+
+	#PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
+	#  StudyDate: for instance, 20190101
+	#  xy is StudyID, for instance, 01
+	if [[ $patient_etc == *_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.* ]]; then
+	    patient=${patient_etc%_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.*}
+	fi
+
+	# if $patient is empty, skip it.
+	if [ -z $patient ]; then
+	    echo "Error: can not parse subject name in " $filename " skipped!"
+	    continue
+	fi
 
 	suffix=${patient_etc##${patient}_}
 
-	
 
 	echo "  PI=$pi Study=$study Date=$date PatientName=$patient"
 	search="${pi}_${study}_${date}_${patientname_search}_[0-9]*.*.t*"
@@ -202,6 +269,7 @@ do
 	fi
 	echo $subjid >> $subjlist
 
+
 done
 
 if [ ! -e $subjlist ]
@@ -243,29 +311,6 @@ parallel --link -a $heudiconv_subjlist_all  -a $dicomexpr_list $popts  "heudicon
 fi
 
 
-if [ -n "$sessid" ]
-then
-
-#update dicominfo.tsv with header line
-for tsv in `ls $output_dir/.heudiconv/*/*/info/dicominfo*tsv`
-do
- tsv_new=$tsv.new 
- cat $execpath/etc/dicominfo_hdr.tsv > $tsv_new
- cat $tsv >> $tsv_new
- mv $tsv_new $tsv
-done
-
-else
-
-#update dicominfo.tsv with header line
-for tsv in `ls $output_dir/.heudiconv/*/info/dicominfo*tsv`
-do
- tsv_new=$tsv.new 
- cat $execpath/etc/dicominfo_hdr.tsv > $tsv_new
- cat $tsv >> $tsv_new
- mv $tsv_new $tsv
-done
-fi
 
 echo "  Moving hidden .heudiconv folder to $heudiconv_out"
 mv $output_dir/.heudiconv $heudiconv_out
@@ -278,13 +323,22 @@ Nfmaps=`ls $output_dir/sub-*/ses-*/fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
 Ngre=`ls $output_dir/sub-*/ses-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
 Nbold=`ls $output_dir/sub-*/ses-*/func/*bold?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/ses-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
+Nsa2rage_complex=`ls $output_dir/sub-*/ses-*/fmap/*SA2RAGE?.nii.gz 2>/dev/null | wc -l`
+Nmp2rage=`ls $output_dir/sub-*/ses-*/anat/*MP2RAGE.nii.gz 2>/dev/null | wc -l`
+Ndwi=`ls $output_dir/sub-*/ses-*/dwi/*dwi.nii.gz 2>/dev/null | wc -l`
+Nbvec=`ls $output_dir/sub-*/ses-*/dwi/*dwi.bvec 2>/dev/null | wc -l`
 else
 #check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
 Nfmaps=`ls $output_dir/sub-*/fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
 Ngre=`ls $output_dir/sub-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
 Nbold=`ls $output_dir/sub-*/func/*bold?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
+Nsa2rage_complex=`ls $output_dir/sub-*/fmap/*SA2RAGE?.nii.gz 2>/dev/null | wc -l`
+Nmp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE.nii.gz 2>/dev/null | wc -l`
+Ndwi=`ls $output_dir/sub-*/dwi/*dwi.nii.gz 2>/dev/null | wc -l`
+Nbvec=`ls $output_dir/sub-*/dwi/*dwi.bvec 2>/dev/null | wc -l`
 fi
+
 
 
 if [ ! "$Nfmaps" = 0 ]
@@ -300,7 +354,7 @@ fi
 
 fi
 
-if [ ! "$Ngre" = 0 -o ! "$Nmemp2rage" = 0 ]
+if [ ! "$Ngre" = 0 -o ! "$Nmemp2rage" = 0 -o ! "$Nsa2rage_complex" = 0 ]
 then
 echo "  Running bids correction from multi-echo GRE and MP2RAGE fieldmap data..."
 
@@ -328,6 +382,32 @@ fi
 
 fi
 
+if [ ! "$Nmprage" = 0 ]
+then
+
+echo " Running script to compute UNI-DEN from UNI & inversions (if it doesn't exist already)"
+if [ -n "$sessid" ]
+then
+parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctUniDen $output_dir {1} {2} | tee -a $tuneup_log.{1}.{2}"
+else
+parallel -a $heudiconv_subjlist $popts "$execpath/etc/correctUniDen $output_dir {1} | tee -a $tuneup_log.{1}"
+fi
+
+fi
+
+#if number of dwi != number of bvec files, then we are most likely dealing with bruker dwi, use custom script to extract bvec
+if [ ! "$Ndwi" = "$Nbvec" ]
+then
+
+echo " Running bvac/bval/bmat generation for Bruker data"
+if [ -n "$sessid" ]
+then
+parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctBrukerBdata $output_dir $tar {1} {2} | tee -a $tuneup_log.{1}.{2}"
+else
+parallel -a $heudiconv_subjlist $popts "$execpath/etc/correctBrukerBdata $output_dir $tar {1} | tee -a $tuneup_log.{1}"
+fi
+fi
+
 if [ "$do_deface" = "1" ]
 then
 
@@ -341,7 +421,7 @@ fi
 
 fi
 
-echo "  Cleaning participants file (sorting, removing extra columns)..."
+echo "  Cleaning participants and other tsv files (sorting, removing extra columns)..."
 $execpath/etc/cleanParticipantsFile $output_dir
 
 echo "  Adding default .bidsignore file..."

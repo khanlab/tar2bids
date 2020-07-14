@@ -11,9 +11,36 @@ in_bids=$1
 tsv=$in_bids/participants.tsv
 tmp_tsv=$in_bids/participants_new.tsv
 
+echo "Cleaning $tsv to remove all but 1st column"
 #sort it
 sort $tsv  > $tmp_tsv
 
 #remove all columns except ID, since age, sex entered at console not always correct
 awk -F '\t' '{OFS="\t"} {print $1}' $tmp_tsv > $tsv
 rm -f $tmp_tsv
+
+
+#clean up scans.tsv files to remove all but columns 1-2 (remove 3,4)
+for scans_tsv in `ls $in_bids/sub-*/*_scans.tsv $in_bids/sub-*/ses-*/*_scans.tsv 2> /dev/null `
+do
+  echo "Cleaning $scans_tsv to remove all but 1st/2nd columns"
+  tmp_tsv=${scans_tsv%.tsv}_new.tsv
+
+  #also all but columns 1 and 2 from _scans.tsv files
+  awk -F '\t' '{OFS="\t"} {print $1,$2}' $scans_tsv > $tmp_tsv
+  mv  $tmp_tsv $scans_tsv
+
+done
+
+#clean up events.tsv files to remove all but columns 1-5 (remove 6th)
+for events_tsv in `ls $in_bids/sub-*/func/*_events.tsv $in_bids/sub-*/ses-*/func/*_events.tsv 2> /dev/null `
+do
+  echo "Cleaning $events_tsv to remove all but columns 1-5"
+  tmp_tsv=${events_tsv%.tsv}_new.tsv
+
+  awk -F '\t' '{OFS="\t"} {print $1,$2,$3,$4,$5}' $events_tsv > $tmp_tsv
+  mv  $tmp_tsv $events_tsv
+
+done
+
+

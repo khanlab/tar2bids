@@ -43,3 +43,4 @@ fi
 
 	$exec_path/pdt2_bids_corrector.py $in_bids/$out_folder/anat
 
+	$exec_path/magphase_sa2rage_bids_corrector.py $in_bids/$out_folder/fmap

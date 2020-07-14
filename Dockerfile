@@ -2,10 +2,10 @@ FROM neurodebian:xenial
 MAINTAINER <alik@robarts.ca>
 
 #heudiconv version:
-ENV HEUDICONVTAG v0.5.3
+ENV HEUDICONVTAG v0.5.4
 
 #bids validator version:
-ENV BIDSTAG 1.1.3
+ENV BIDSTAG 1.2.5
 
 #pydeface version:
 ENV PYDEFACETAG v1.1.0
@@ -40,8 +40,8 @@ RUN export ND_ENTRYPOINT="/neurodocker/startup.sh" \
     fi \
     && chmod -R 777 /neurodocker && chmod a+s /neurodocker
 
-ENV DCM2NIIX_DATE=20181112
-ENV DCM2NIIX_SHA="62f3b6e801e65aa61484b8e533ab38d284962a70"
+ENV DCM2NIIX_DATE=20190720
+ENV DCM2NIIX_TAG="development"
 
 ENV PATH="/opt/dcm2niix-v1.0.${DCM2NIIX_DATE}/bin:$PATH"
 RUN apt-get update -qq \
@@ -57,8 +57,8 @@ RUN apt-get update -qq \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && git clone https://github.com/rordenlab/dcm2niix /tmp/dcm2niix \
     && cd /tmp/dcm2niix \
-    && git fetch --tags \
-    && git checkout $DCM2NIIX_SHA \
+    && git fetch --tags \	
+    && git checkout $DCM2NIIX_TAG \
     && mkdir /tmp/dcm2niix/build \
     && cd /tmp/dcm2niix/build \
     && cmake  -DCMAKE_INSTALL_PREFIX:PATH=/opt/dcm2niix-v1.0.${DCM2NIIX_DATE} .. \
@@ -136,8 +136,7 @@ RUN apt-get update && \
 RUN git clone https://github.com/bids-standard/bids-validator /opt/bids-validator && \
     cd /opt/bids-validator && \
     git checkout $BIDSTAG && \
-    sed -i -E "s/0.0.0/$BIDSTAG/" package.json && \
-    npm install -g /opt/bids-validator
+    npm install -g /opt/bids-validator/bids-validator
 
 #install gnu parallel
 RUN apt-get update &&  apt-get install -y parallel

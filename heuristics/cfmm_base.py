@@ -131,7 +131,10 @@ def infotodict(seqinfo):
 
     #Diffusion
     dwi = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_run-{item:02d}_dwi')
-    dwi_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_run-{item:02d}_sbref')
+
+    #uFA
+    dwi_ufa = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-uFA_run-{item:02d}_dwi')
+    dwi_ogse = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_run-{item:02d}_ogse')
 
     #Field Maps:
 
@@ -256,7 +259,7 @@ def infotodict(seqinfo):
          pd_t2_tse_tra:[], DIS2D_pd_t2_tse_tra:[], DIS3D_pd_t2_tse_tra:[],
          pd_t2_tse_cor:[], DIS2D_pd_t2_tse_cor:[], DIS3D_pd_t2_tse_cor:[],
 
-         dwi:[],dwi_sbref:[],
+         dwi:[],dwi_ufa:[],dwi_ogse:[],
          fmap_diff:[],fmap_magnitude:[],
          dir_t2:[], DIS2D_dir_t2:[]}
 
@@ -352,13 +355,13 @@ def infotodict(seqinfo):
     #sa2rage
         if ('sa2rage' in s.series_description):
             if ('ND' in (s.image_type[3].strip())):
-                if ('invContrast1' in s.series_description):
+                if ('invContrast1' in s.series_description or 'INV1' in s.series_description):
                     info[inv_1_sa2rage] = [s.series_id]
-                if ('invContrast2' in s.series_description):
+                if ('invContrast2' in s.series_description or 'INV2' in s.series_description):
                     info[inv_2_sa2rage] = [s.series_id]
                 if ('OTHER' in (s.image_type[2].strip())):
                     info[b1map_sa2rage] = [s.series_id]
-                if ('b1DivImg' in s.series_description):
+                if ('b1DivImg' in s.series_description or 'UNI' in s.series_description):
                     info[b1Div_sa2rage] = [s.series_id]
             if ('DIS2D' in (s.image_type[3].strip())):
                 if ('invContrast1' in s.series_description):
@@ -471,12 +474,17 @@ def infotodict(seqinfo):
                     info[fmap_magnitude].append({'item': s.series_id})
 
         #dwi
-        if ('diff' in s.protocol_name or 'DWI' in s.series_description  or 'DTI' in s.series_description ):
-            if ( s.dim4 > 1 and ('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip()) ):
-                info[dwi].append({'item': s.series_id})
-            if ( s.dim4 == 1  and 'SBRef' in (s.series_description).strip() ) :
-                info[dwi_sbref].append({'item': s.series_id})
+        if len(s.image_type) > 2 :
+            if (('DIFFUSION' in s.image_type[2].strip()) and ('ORIGINAL' in s.image_type[0].strip())):
+                if ('cb_ep2d_diff_C26' in s.series_description):
+                    info[dwi_ogse].append({'item': s.series_id})
+                elif ('UFA' in s.series_description ):
+                    info[dwi_ufa].append({'item': s.series_id})
+                else:
+                    info[dwi].append({'item': s.series_id})
 
+    
+            
         #susceptibility ND multiecho
         if ('susc' in s.series_description or 'gre3d' in s.series_description or 't1_fl3d_p4_iso' in s.series_description ):
             if ('M' in (s.image_type[2].strip())):
@@ -526,16 +534,17 @@ def infotodict(seqinfo):
                 info[DIS3D_T2_star].append({'item': s.series_id})
 
         #spc T2w
-        if ('spc_T2' in s.series_description or 'T2w_SPC' in s.series_description or 'T2w_space' in s.series_description or 't2_space' in s.series_description or 't2_spc' in s.series_description ): 
-            if ('ND' in (s.image_type[3].strip())):
-                info[spc_T2w].append({'item': s.series_id})
-            if ('DIS2D' in (s.image_type[3].strip())):
-                info[DIS2D_spc_T2w].append({'item': s.series_id})
-            if ('DIS3D' in (s.image_type[3].strip())):
-                info[DIS3D_spc_T2w].append({'item': s.series_id})
+        if ('spc_T2' in s.series_description or 'T2w_SPC' in s.series_description or 'T2w_space' in s.series_description or 't2_space' in s.series_description or 't2_spc' in s.series_description or 'T2_spc' in s.series_description ): 
+            if ('dark-fluid' not in s.series_description ):
+                if ('ND' in (s.image_type[3].strip())):
+                    info[spc_T2w].append({'item': s.series_id})
+                if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_spc_T2w].append({'item': s.series_id})
+                if ('DIS3D' in (s.image_type[3].strip())):
+                    info[DIS3D_spc_T2w].append({'item': s.series_id})
     
-        #spc T2w
-        if ('spc_flair' in s.series_description ): 
+        #spc T2w  
+        if ('spc_flair' in s.series_description or 'dark-fluid' in s.series_description): 
             if ('ND' in (s.image_type[3].strip())):
                 info[spc_FLAIR].append({'item': s.series_id})
             if ('DIS2D' in (s.image_type[3].strip())):
@@ -544,7 +553,7 @@ def infotodict(seqinfo):
                 info[DIS3D_spc_FLAIR].append({'item': s.series_id})
 
         #TOF angio
-        if ('3D_TOF' in s.series_description): 
+        if ('3D_TOF' in s.series_description or 'tof_fl3d' in s.series_description): 
             if (s.dim3>1):
                 if ('ND' in (s.image_type[3].strip())):
                     info[TOF_angio] = [s.series_id]

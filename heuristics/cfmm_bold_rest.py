@@ -34,7 +34,7 @@ def infotodict(seqinfo):
 
 
     fmap = create_key('{bids_subject_session_dir}/fmap/{bids_subject_session_prefix}_dir-{dir}_epi')
-    fmap_sbref = create_key('{bids_subject_session_dir}/fmap/{bids_subject_session_prefix}_dir-{dir}_sbref')
+    #fmap_sbref = create_key('{bids_subject_session_dir}/fmap/{bids_subject_session_prefix}_dir-{dir}_sbref')
 
     info[rest]=[]
     info[rest_sbref]=[]
@@ -43,7 +43,7 @@ def infotodict(seqinfo):
     info[movie]=[]
     info[movie_sbref]=[]
     info[fmap]=[]
-    info[fmap_sbref]=[]
+#    info[fmap_sbref]=[]
 #    info[pilot]=[]
 #    info[pilot_psf]=[]
 #    info[pilot_psf_dico]=[]
@@ -52,36 +52,29 @@ def infotodict(seqinfo):
     for idx, s in enumerate(seqinfo):
        
         #rs func (incl opp phase enc)
-        if ('Movie' in (s.series_description).strip()):
-            if (s.dim4==1 and  'SBRef' in (s.series_description).strip()):
+        if len(s.image_type) > 2 :
+            if ( 'DIFFUSION' in s.image_type[2].strip() ):
+                continue
+            elif ('Movie' in (s.series_description).strip()):
+                if (s.dim4==1 and  'SBRef' in (s.series_description).strip()):
                     info[movie_sbref].append({'item': s.series_id})
-            elif (s.dim4>1):
+                elif (s.dim4>1):
                     info[movie].append({'item': s.series_id})
 
-        
-        elif ('bold' in s.protocol_name or 'resting_state' in s.series_description or 'mbep2d' in (s.series_description).strip() or 'ep_bold' in (s.series_description).strip() and not ('diff' in s.protocol_name or 'DWI' in s.series_description )):
+            elif ('bold' in s.protocol_name or 'resting_state' in s.series_description or 'mbep2d' in (s.series_description).strip() or 'ep_bold' in (s.series_description).strip() ):
             
-            if ('SBRef' in (s.series_description).strip()):
-                if ('PA' in (s.series_description).strip()):
-                    info[fmap_sbref].append({'item': s.series_id,'dir': 'PA'})
-                elif ('AP' in (s.series_description).strip()):
-                    info[fmap_sbref].append({'item': s.series_id,'dir': 'AP'})
-                elif ('LR' in (s.series_description).strip()):
-                    info[fmap_sbref].append({'item': s.series_id,'dir': 'LR'})
-                elif ('RL' in (s.series_description).strip()):
-                    info[fmap_sbref].append({'item': s.series_id,'dir': 'RL'})
-                else:
-                    info[rest_sbref].append({'item': s.series_id})
+                if ('SBRef' in (s.series_description).strip()):
+                       info[rest_sbref].append({'item': s.series_id})
 
-            elif (s.dim4==1):
-                if ('PA' in (s.series_description).strip()):
-                    info[fmap].append({'item': s.series_id,'dir':'PA'})
-                elif ('AP' in (s.series_description).strip()):
-                    info[fmap].append({'item': s.series_id,'dir':'AP'})
-                elif ('LR' in (s.series_description).strip()):
-                    info[fmap].append({'item': s.series_id,'dir':'LR'})
-                elif ('RL' in (s.series_description).strip()):
-                    info[fmap].append({'item': s.series_id,'dir':'RL'})
+                elif (s.dim4==1):
+                    if ('PA' in (s.series_description).strip()):
+                        info[fmap].append({'item': s.series_id,'dir':'PA'})
+                    elif ('AP' in (s.series_description).strip()):
+                        info[fmap].append({'item': s.series_id,'dir':'AP'})
+                    elif ('LR' in (s.series_description).strip()):
+                        info[fmap].append({'item': s.series_id,'dir':'LR'})
+                    elif ('RL' in (s.series_description).strip()):
+                        info[fmap].append({'item': s.series_id,'dir':'RL'})
 
 #                else:
 #                    if ('mi_ep2d' in (s.series_description).strip() ):
@@ -91,15 +84,14 @@ def infotodict(seqinfo):
 #                            info[pilot_psf].append({'item': s.series_id})
 #                    else:
 #                        info[pilot].append({'item': s.series_id})
-
-            else: # greater than 1 timepoint:
-                if ('mi_ep2d' in (s.series_description).strip() ):
-                    if ('DICO'  in (s.image_type[4].strip())):
-                        info[rest_psf_dico].append({'item': s.series_id})
+                else: # greater than 1 timepoint:
+                    if ('mi_ep2d' in (s.series_description).strip() ):
+                        if ('DICO'  in (s.image_type[4].strip())):
+                            info[rest_psf_dico].append({'item': s.series_id})
+                        else:
+                            info[rest_psf].append({'item': s.series_id})
                     else:
-                        info[rest_psf].append({'item': s.series_id})
-                else:
-                    info[rest].append({'item': s.series_id})
+                        info[rest].append({'item': s.series_id})
  
                   
     return info
