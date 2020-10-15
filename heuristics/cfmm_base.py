@@ -381,7 +381,7 @@ def infotodict(seqinfo):
     #tse tra T2w
 
 
-        if ('pd_t2_tse_tra' in s.series_description): 
+        if ('pd_t2_tse_tra' in s.series_description or 'pd+t2_tse_tra' in s.series_description): 
                 if ('ND' in (s.image_type[3].strip())):
                     info[pd_t2_tse_tra].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
@@ -391,7 +391,7 @@ def infotodict(seqinfo):
 
 
                 #tse cor T2w
-        elif ('pd_t2_tse_cor' in s.series_description): 
+        elif ('pd_t2_tse_cor' in s.series_description or 'pd+t2_tse_cor' in s.series_description): 
                 if ('ND' in (s.image_type[3].strip())):
                     info[pd_t2_tse_cor].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
@@ -399,7 +399,7 @@ def infotodict(seqinfo):
                 if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_pd_t2_tse_cor].append({'item': s.series_id})
 
-        elif ('pd_t2_tse' in s.series_description): 
+        elif ('pd_t2_tse' in s.series_description or 'pd+t2_tse' in s.series_description): 
                 if ('ND' in (s.image_type[3].strip())):
                     info[pd_t2_tse].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):

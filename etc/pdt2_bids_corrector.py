@@ -29,12 +29,12 @@ for i,k in zip(json_files, nifti_files):
     #in the case of echo-1, the EchoNumber tag does not exist in the json file    
     if ("EchoNumber" not in data) and ("_echo_" in i):
         js_addEchoNum = re.sub("_echo_", "_echo-1_", i)
-        js_changeEnding = re.sub("PDT2.*", "PDT2.json", js_addEchoNum)
+        js_changeEnding = re.sub("_PDT2[0-9]+.*", "_PDT2.json", js_addEchoNum)
         print('renaming: '+i+' to '+js_changeEnding)
         os.rename(i, js_changeEnding)
         
         ni_addEchoNum = re.sub("_echo_", "_echo-1_", k)
-        ni_changeEnding = re.sub("PDT2.*", "PDT2.nii.gz", ni_addEchoNum)
+        ni_changeEnding = re.sub("_PDT2[0-9]+.*", "_PDT2.nii.gz", ni_addEchoNum)
         print('renaming: '+k+' to '+ni_changeEnding)
         os.rename(k, ni_changeEnding)
     
@@ -43,12 +43,12 @@ for i,k in zip(json_files, nifti_files):
         echonum = data["EchoNumber"]
         
         js_addEchoNum = re.sub("_echo_", "_echo-" + str(echonum) + "_", i)
-        js_changeEnding = re.sub("PDT2.*", "PDT2.json", js_addEchoNum)
+        js_changeEnding = re.sub("_PDT2[0-9]+.*", "_PDT2.json", js_addEchoNum)
         print('renaming: '+i+' to '+js_changeEnding)
         os.rename(i, js_changeEnding)
         
         ni_addEchoNum = re.sub("_echo_", "_echo-" + str(echonum) + "_", k)
-        ni_changeEnding = re.sub("PDT2.*", "PDT2.nii.gz", ni_addEchoNum)
+        ni_changeEnding = re.sub("_PDT2[0-9]+.*", "_PDT2.nii.gz", ni_addEchoNum)
         print('renaming: '+k+' to '+ni_changeEnding)
         os.rename(k, ni_changeEnding)
 
