@@ -48,14 +48,14 @@ for js,ni in zip(json_files, nifti_files):
     if ("EchoNumber" not in json_data) and ("_echo_" in js):
         js_addEchoNum = re.sub("_echo_", "_echo-1_", js)
 
-        js_changeEnding = re.sub("_GRE[0-9].json", "_GRE.json", js_addEchoNum)
+        js_changeEnding = re.sub("_GRE[0-9]+\.json", "_GRE.json", js_addEchoNum)
 
         print('renaming: '+js+' to '+js_changeEnding)
         os.rename(js, js_changeEnding)
         
         ni_addEchoNum = re.sub("_echo_", "_echo-1_", ni)
 
-        ni_changeEnding = re.sub("_GRE[0-9].nii.gz", "_GRE.nii.gz", ni_addEchoNum)
+        ni_changeEnding = re.sub("_GRE[0-9]+\.nii.gz", "_GRE.nii.gz", ni_addEchoNum)
 
         print('renaming: '+ni+' to '+ni_changeEnding)
         os.rename(ni, ni_changeEnding)
@@ -66,14 +66,14 @@ for js,ni in zip(json_files, nifti_files):
         
         js_addEchoNum = re.sub("_echo_", "_echo-" + str(echonum) + "_", js)
 
-        js_changeEnding = re.sub("_GRE[0-9].json", "_GRE.json", js_addEchoNum)
+        js_changeEnding = re.sub("_GRE[0-9]+\.json", "_GRE.json", js_addEchoNum)
 
         print('renaming: '+js+' to '+js_changeEnding)
         os.rename(js, js_changeEnding)
         
         ni_addEchoNum = re.sub("_echo_", "_echo-" + str(echonum) + "_", ni)
 
-        ni_changeEnding = re.sub("_GRE[0-9].nii.gz", "_GRE.nii.gz", ni_addEchoNum)
+        ni_changeEnding = re.sub("_GRE[0-9]+\.nii.gz", "_GRE.nii.gz", ni_addEchoNum)
 
         print('renaming: '+ni+' to '+ni_changeEnding)
         os.rename(ni, ni_changeEnding)
