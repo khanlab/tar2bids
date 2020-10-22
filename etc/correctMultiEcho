@@ -31,6 +31,9 @@ fi
 
 	$exec_path/meGRE_bids_corrector.py $in_bids/$out_folder/anat
 
+    #create phase from real/imag
+	$exec_path/genPhaseFromComplexNii.py $in_bids/$out_folder/anat
+
 	#fix ImagingFrequency by getting from another json file
 	match=`grep ImagingFrequency $in_bids/$out_folder/anat/*.json | head -n 1`
 	freq=${match##*:\ }
