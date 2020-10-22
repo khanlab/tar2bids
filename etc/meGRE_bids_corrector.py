@@ -28,14 +28,23 @@ for js,ni in zip(json_files, nifti_files):
 
     #check if part-complex -- if so, then need to make odd numbered GRE files as real, and even as imag
     if ( "_part-complex_" in js ):
-        #get GRE number
-        m=re.findall("(\d{1,2})(?:\.json)",js)
-        if ( int(m[0]) % 2 == 0):
+        #get real/imag by checking ImageType[5] = REAL or IMAGINARY
+        with open(js) as f:
+            json_dict = json.load(f)
+    
+        if 'ImageType' not in json_dict:
+            print('ERROR, cannot find ImageType field in complex json to check real vs imaginary')
+            sys.exit(1)
+        if json_dict['ImageType'][5] == 'IMAGINARY':
             js_renameComplex = re.sub("_part-complex_","_part-imag_",js)
             ni_renameComplex = re.sub("_part-complex_","_part-imag_",ni)
-        else:
+        elif json_dict['ImageType'][5] == 'REAL':
             js_renameComplex = re.sub("_part-complex_","_part-real_",js)
             ni_renameComplex = re.sub("_part-complex_","_part-real_",ni)
+        else:
+            print('ERROR, ImageType field in complex json is neither REAL nor IMAGINARY')
+            sys.exit(1)
+
         print('renaming: '+js+' to '+js_renameComplex)
         print('renaming: '+ni+' to '+ni_renameComplex)
         os.rename(js,js_renameComplex)
