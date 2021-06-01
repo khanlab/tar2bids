@@ -127,7 +127,7 @@ COPY . /opt/tar2bids
 
 
 RUN apt-get update && \
-    apt-get install -y git nodejs 
+    apt-get install -y git nodejs && apt-get install -y npm
 
 RUN git clone https://github.com/bids-standard/bids-validator /opt/bids-validator && \
     cd /opt/bids-validator && \
