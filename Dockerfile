@@ -5,7 +5,7 @@ MAINTAINER <alik@robarts.ca>
 ENV HEUDICONVTAG v0.5.4
 
 #bids validator version:
-ENV BIDSTAG 1.2.5
+ENV BIDSTAG v1.7.2
 
 #pydeface version:
 ENV PYDEFACETAG v1.1.0
