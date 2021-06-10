@@ -38,3 +38,9 @@
 */dwi/*.bmat
 */*/dwi/*.dcm
 */*/dwi/*.bmat
+
+#multiecho mprage
+*/anat/*_echo-*_T1w.*
+
+#vnav
+*/anat/*_vNav.*

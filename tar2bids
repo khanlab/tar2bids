@@ -289,6 +289,7 @@ sort -u $subjlist -o $subjlist
 
 #options for GNU parallel
 popts="--no-notice --verbose --jobs $ncores -u"
+popts_heudiconv="--no-notice --verbose --jobs 1 -u" #force only one heudiconv job at a time to avoid oversubscribing memory
 
 if [ -n "$tempdir" ]
 then
@@ -302,11 +303,11 @@ if [ -n "$sessid" ]
 then
 
 
-parallel --link -a $heudiconv_subjlist_all -a $heudiconv_sesslist_all -a $dicomexpr_list $popts  "heudiconv ${heudi_opts} -b -d {3} -o $output_dir -f $heuristic_file -s {1} -ss {2} | tee $heudi_log.{1}.{2} "
+parallel --link -a $heudiconv_subjlist_all -a $heudiconv_sesslist_all -a $dicomexpr_list $popts_heudiconv  "heudiconv ${heudi_opts} -b -d {3} -o $output_dir -f $heuristic_file -s {1} -ss {2} | tee $heudi_log.{1}.{2} "
 
 else
 
-parallel --link -a $heudiconv_subjlist_all  -a $dicomexpr_list $popts  "heudiconv ${heudi_opts} -b -d {2} -o $output_dir -f $heuristic_file -s {1}  | tee $heudi_log.{1}"
+parallel --link -a $heudiconv_subjlist_all  -a $dicomexpr_list $popts_heudiconv  "heudiconv ${heudi_opts} -b -d {2} -o $output_dir -f $heuristic_file -s {1}  | tee $heudi_log.{1}"
 
 fi
 
@@ -426,6 +427,13 @@ parallel -a $heudiconv_subjlist $popts "$execpath/etc/correctBrukerBdata $output
 fi
 fi
 
+#merge any vNav files if they exist
+python $execpath/etc/merge_vNav.py $output_dir
+
+#remove scans.tsv files as they may be out of date after corrections
+rm -f $output_dir/*/*_scans.tsv $output_dir/*/*/*_scans.tsv
+
+
 if [ "$do_deface" = "1" ]
 then
 
@@ -441,6 +449,14 @@ fi
 
 echo "  Cleaning participants and other tsv files (sorting, removing extra columns)..."
 $execpath/etc/cleanParticipantsFile $output_dir
+
+
+#remove CogAtlasID from top-level bold json by grepping it out:
+for json in `ls $output_dir/*bold.json 2> /dev/null`
+do
+    echo "Removing CogAtlasID from $json if it exists"
+    grep -v CogAtlasID $json > $json.new && mv -v $json.new $json
+done
 
 echo "  Adding default .bidsignore file..."
 cp -v $execpath/etc/bidsignore $output_dir/.bidsignore
