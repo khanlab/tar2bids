@@ -49,8 +49,11 @@ def infotodict(seqinfo):
     fmap_spinecho_ap = create_key('{bids_subject_session_dir}/fmap/{bids_subject_session_prefix}_acq-spinecho_dir-AP_run-{item}_epi')
     fmap_spinecho_pa = create_key('{bids_subject_session_dir}/fmap/{bids_subject_session_prefix}_acq-spinecho_dir-PA_run-{item}_epi')
 
-    movie = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-movie_run-{item}_bold')
-    movie_sbref = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-movie_run-{item}_sbref')
+    movie_ap = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-movie_acq-AP_run-{item}_bold')
+    movie_ap_sbref = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-movie_acq-AP_run-{item}_sbref')
+
+    movie_pa = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-movie_acq-PA_run-{item}_bold')
+    movie_pa_sbref = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-movie_acq-PA_run-{item}_sbref')
 
     rest_ap = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-rest_acq-AP_run-{item}_bold')
     rest_ap_sbref = create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-rest_acq-AP_run-{item}_sbref')
@@ -64,7 +67,8 @@ def infotodict(seqinfo):
          t1w_basic:[],t2w_basic:[],
          rest_ap:[],rest_ap_sbref:[],
          rest_pa:[],rest_pa_sbref:[],
-         movie:[],movie_sbref:[],
+         movie_ap:[],movie_ap_sbref:[],
+         movie_pa:[],movie_pa_sbref:[],
          dwi_98_ap:[],dwi_98_pa:[],dwi_98_ap_sbref:[],dwi_98_pa_sbref:[],
          dwi_99_ap:[],dwi_99_pa:[],dwi_99_ap_sbref:[],dwi_99_pa_sbref:[],
          fmap_spinecho_ap:[],fmap_spinecho_pa:[]}
@@ -149,11 +153,17 @@ def infotodict(seqinfo):
             else:
                 info[rest_pa].append({'item': s.series_id})
  
-        if 'Movie' in s.series_description:
+        if 'movie_AP' in s.series_description:
             if (s.dim4==1 and 'SBRef' in s.series_description):
-                info[movie_sbref].append({'item': s.series_id})
+                info[movie_ap_sbref].append({'item': s.series_id})
             else:
-                info[movie].append({'item': s.series_id})
- 
+                info[movie_ap].append({'item': s.series_id})
+                
+        if 'movie_PA' in s.series_description:
+            if (s.dim4==1 and 'SBRef' in s.series_description):
+                info[movie_pa_sbref].append({'item': s.series_id})
+            else:
+                info[movie_pa].append({'item': s.series_id})
+  
              
     return info
