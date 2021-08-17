@@ -190,6 +190,13 @@ def infotodict(seqinfo):
     mag_echo_CS_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-CS_run-{item:02d}_part-mag_echo_GRE')
     phase_echo_CS_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-CS_run-{item:02d}_part-phase_echo_GRE')    
     
+    #aspire:
+    DIS2D_aspire_mag_echo_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-ASPIRE_part-mag_rec-DIS2D_echo_GRE')
+    DIS2D_aspire_phase_echo_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-ASPIRE_part-phase_rec-DIS2D_echo_GRE')
+    DIS2D_aspire_T2_star_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-ASPIRE_rec-DIS2D_T2star')
+    DIS2D_aspire_R2_star_GRE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-ASPIRE_rec-DIS2D_R2star')
+ 
+
     # MEMP2RAGE #
     me_t1     = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-MP2RAGE_run-{item:02d}_T1w')
     me_t1map  = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_echo_acq-MP2RAGE_run-{item:02d}_T1map')
@@ -230,7 +237,13 @@ def infotodict(seqinfo):
          
          mag_echo_CS_GRE:[],
          phase_echo_CS_GRE:[],
-            
+    
+         DIS2D_aspire_mag_echo_GRE:[],
+         DIS2D_aspire_phase_echo_GRE:[],
+         DIS2D_aspire_T2_star_GRE:[],
+         DIS2D_aspire_R2_star_GRE:[],
+
+        
          DIS2D_mag_echo_GRE:[],
          DIS2D_phase_echo_GRE:[],
          DIS3D_mag_echo_GRE:[],
@@ -511,8 +524,23 @@ def infotodict(seqinfo):
                  if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_phase_echo_GRE] =  [s.series_id]
 
-                    
-        
+        #susceptibility ND multiecho
+        if ('ASPIRE' in s.series_description ):
+            if 'R2star' in s.series_description:
+                 if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_aspire_R2_star_GRE] =  [s.series_id]
+            elif 'T2star' in s.series_description:
+                  if ('DIS2D' in (s.image_type[3].strip())):
+                    info[DIS2D_aspire_T2_star_GRE] =  [s.series_id]
+            elif len(s.image_type) > 3 :
+                if (('M' in (s.image_type[2].strip()) ) and ('ASPIRE' not in s.image_type )):
+                     if ('DIS2D' in (s.image_type[3].strip())):
+                        info[DIS2D_aspire_mag_echo_GRE] =  [s.series_id]
+                if ('P' in (s.image_type[2].strip()) and len(s.image_type) >4):
+                     if ('DIS2D' in (s.image_type[4].strip())):
+                        info[DIS2D_aspire_phase_echo_GRE] =  [s.series_id]
+
+           
         #multi-echo GRE with compressed sensing
         if ('gre_CS_C41' in s.series_description):
             if ('M' in (s.image_type[2].strip())):
