@@ -77,24 +77,25 @@ def infotodict(seqinfo):
 
 
         # T1w images
-        if 'T1w_MPR_vNav_setter' in s.series_description:
-            if 'MOSAIC' in s.image_type:
-                info[t1w_vnavs].append({'item': s.series_id})
-
-        elif ('tfl_mgh_epinav_ABCD' in s.series_description):
-            if 'OTHER' in s.image_type: 
-                if 'NORM' in s.image_type:
-                    info[t1w_norm].append({'item': s.series_id})
+        if 'T1w_MPR' in s.series_description:
+            if 'vNav' in s.series_description:
+                if 'setter' in s.series_description:
+                    if 'MOSAIC' in s.image_type:
+                        info[t1w_vnavs].append({'item': s.series_id})
                 else:
-                    info[t1w].append({'item': s.series_id})
-            if 'M' in s.image_type: 
-                if 'NORM' in s.image_type:
-                    info[t1w_me_norm].append({'item': s.series_id})
-                else:
-                    info[t1w_me].append({'item': s.series_id})
-                
-        elif ('T1w_MPR' in s.series_description):
-            info[t1w_basic].append({'item': s.series_id})
+                    if 'OTHER' in s.image_type: 
+                        if 'NORM' in s.image_type:
+                            info[t1w_norm].append({'item': s.series_id})
+                        else:
+                            info[t1w].append({'item': s.series_id})
+                    if 'M' in s.image_type: 
+                        if 'NORM' in s.image_type:
+                            info[t1w_me_norm].append({'item': s.series_id})
+                        else:
+                            info[t1w_me].append({'item': s.series_id})
+                        
+            else:
+                info[t1w_basic].append({'item': s.series_id})
 
 
         #T2w images

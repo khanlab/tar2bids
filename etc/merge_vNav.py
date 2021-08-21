@@ -58,11 +58,17 @@ for vnav in glob.glob(f'{bids_dir}/**/*_vNav0001.nii.gz',recursive=True):
        
  
     #move all other files to sourcedata
-    print('moving vnav files to sourcedata, replacing with:')
+    print('moving vnav files to sourcedata/vNav, replacing with:')
     print(vnav_4d)
+    
+    #create vNav folder in sourcedata:
+    from pathlib import Path
+    Path(os.path.join(bids_dir,'sourcedata','vNav')).mkdir(
+        parents=True, exist_ok=True)
+
     for f in glob.glob(prefix + 'vNav????.*'):
         (head,tail) = os.path.split(f)
-        os.rename(f,os.path.join(bids_dir,'sourcedata',tail))   
+        os.rename(f,os.path.join(bids_dir,'sourcedata','vNav',tail))   
    
     #save new 4d file
     nib_4d = nib.nifti1.Nifti1Image(vol_4d, init_nib.affine)
