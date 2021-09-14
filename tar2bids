@@ -325,6 +325,7 @@ NfmapsCase2=`ls $output_dir/sub-*/ses-*/fmap/*twomagphase1.nii.gz 2>/dev/null | 
 Ngre=`ls $output_dir/sub-*/ses-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
 Nbold=`ls $output_dir/sub-*/ses-*/func/*bold?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/ses-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
+Nmemprage=`ls $output_dir/sub-*/ses-*/anat/*MEMPRAGE?.nii.gz 2>/dev/null | wc -l`
 Nsa2rage_complex=`ls $output_dir/sub-*/ses-*/fmap/*SA2RAGE?.nii.gz 2>/dev/null | wc -l`
 Nmp2rage=`ls $output_dir/sub-*/ses-*/anat/*MP2RAGE.nii.gz 2>/dev/null | wc -l`
 Ndwi=`ls $output_dir/sub-*/ses-*/dwi/*dwi.nii.gz 2>/dev/null | wc -l`
@@ -336,6 +337,7 @@ NfmapsCase2=`ls $output_dir/sub-*/fmap/*twomagphase1.nii.gz 2>/dev/null | wc -l`
 Ngre=`ls $output_dir/sub-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
 Nbold=`ls $output_dir/sub-*/func/*bold?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
+Nmemprage=`ls $output_dir/sub-*/anat/*MEMPRAGE?.nii.gz 2>/dev/null | wc -l`
 Nsa2rage_complex=`ls $output_dir/sub-*/fmap/*SA2RAGE?.nii.gz 2>/dev/null | wc -l`
 Nmp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE.nii.gz 2>/dev/null | wc -l`
 Ndwi=`ls $output_dir/sub-*/dwi/*dwi.nii.gz 2>/dev/null | wc -l`
@@ -373,7 +375,7 @@ fi
 
 
 
-if [ ! "$Ngre" = 0 -o ! "$Nmemp2rage" = 0 -o ! "$Nsa2rage_complex" = 0 ]
+if [ ! "$Ngre" = 0 -o ! "$Nmemp2rage" = 0 -o ! "$Nsa2rage_complex" = 0 -o ! "$Nmemprage" = 0 ]
 then
 echo "  Running bids correction from multi-echo GRE and MP2RAGE fieldmap data..."
 
