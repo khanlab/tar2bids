@@ -20,9 +20,9 @@ def infotodict(seqinfo):
     """
 
     t1w = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MPRvNav4eRMS_run-{item}_T1w')
-    t1w_me = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MPRvNav4e_run-{item}_T1w')
+    t1w_me = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MPRvNav4e_run-{item}_MEMPRAGE')
     t1w_norm = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MPRvNavNorm4eRMS_run-{item}_T1w')
-    t1w_me_norm = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MPRvNavNorm4e_run-{item}_T1w')
+    t1w_me_norm = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MPRvNavNorm4e_run-{item}_MEMPRAGE')
     t1w_vnavs = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MPRvNav_run-{item}_vNav')
 
     t2w = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-SPCvNavRMS_run-{item}_T2w')
@@ -85,12 +85,15 @@ def infotodict(seqinfo):
                 else:
                     if 'OTHER' in s.image_type: 
                         if 'NORM' in s.image_type:
-                            info[t1w_norm].append({'item': s.series_id})
+                            print('skipping pre-scan norm RMS combined T1w')
+                            #info[t1w_norm].append({'item': s.series_id})
                         else:
-                            info[t1w].append({'item': s.series_id})
+                            print('skipping no pre-scan norm RMS combined T1w')
+                            #info[t1w].append({'item': s.series_id})
                     if 'M' in s.image_type: 
                         if 'NORM' in s.image_type:
-                            info[t1w_me_norm].append({'item': s.series_id})
+                            print('skipping pre-scan norm separated echo T1w')
+                            #info[t1w_me_norm].append({'item': s.series_id})
                         else:
                             info[t1w_me].append({'item': s.series_id})
                         
