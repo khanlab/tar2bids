@@ -107,7 +107,8 @@ def infotodict(seqinfo):
                 info[t2w_vnavs].append({'item': s.series_id})
         elif ('T2w_SPC_800iso_vNav' in s.series_description):
             if 'NORM' in s.image_type:
-                info[t2w_norm].append({'item': s.series_id}) 
+                print('skipping pre-scan norm T2w')
+#                info[t2w_norm].append({'item': s.series_id}) 
             else:
                 info[t2w].append({'item': s.series_id}) 
         elif ('T2w_SPC' in s.series_description):
