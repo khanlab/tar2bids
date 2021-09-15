@@ -40,10 +40,9 @@ RUN export ND_ENTRYPOINT="/neurodocker/startup.sh" \
     fi \
     && chmod -R 777 /neurodocker && chmod a+s /neurodocker
 
-ENV DCM2NIIX_DATE=20190720
-ENV DCM2NIIX_TAG="development"
+ENV DCM2NIIX_TAG="v1.0.20210317"
 
-ENV PATH="/opt/dcm2niix-v1.0.${DCM2NIIX_DATE}/bin:$PATH"
+ENV PATH="/opt/dcm2niix-${DCM2NIIX_TAG}/bin:$PATH"
 RUN apt-get update -qq \
     && apt-get install -y -q --no-install-recommends \
            cmake \
@@ -61,7 +60,7 @@ RUN apt-get update -qq \
     && git checkout $DCM2NIIX_TAG \
     && mkdir /tmp/dcm2niix/build \
     && cd /tmp/dcm2niix/build \
-    && cmake  -DCMAKE_INSTALL_PREFIX:PATH=/opt/dcm2niix-v1.0.${DCM2NIIX_DATE} .. \
+    && cmake  -DCMAKE_INSTALL_PREFIX:PATH=/opt/dcm2niix-${DCM2NIIX_TAG} .. \
     && make \
     && make install \
     && rm -rf /tmp/dcm2niix
