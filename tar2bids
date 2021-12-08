@@ -22,6 +22,7 @@ function usage {
 	echo "	-C : copy tarfiles to BIDS sourcedata folder" 
 	echo "	-D : enable defacing of T1w images : default will not deface"
 	echo "	-x : run dcm2niix without any heuristics, files placed in OUTPUT/sourcedata/dcm2niix/"
+    echo "  -U <factor>: set uni-den mp2rage denoising multiplicative factor : default=$uniden_factor"
 	echo ""
 	echo " Available heuristic files:"
 	for h in `ls ${heuristic_dir}/*.py`
@@ -45,8 +46,10 @@ tempdir=
 copytar=0
 do_deface=0
 do_dcm2niix=0
+uniden_factor=6
 
-while getopts "N:o:h:O:P:T:w:CDx" options; do
+
+while getopts "N:o:h:O:P:T:w:CDxU:" options; do
  case $options in
     N ) echo "  Overriding number of cores: $OPTARG" >&2
 	ncores=$OPTARG;;
@@ -68,6 +71,8 @@ while getopts "N:o:h:O:P:T:w:CDx" options; do
     copytar=1;;
     x ) echo "  Running dcm2niix with no heuristics" >&2
     do_dcm2niix=1;;
+    U ) echo "  Using UNI-DEN factor: $OPTARG"  >&2
+    uniden_factor=$OPTARG;;
 
 
    * ) usage
@@ -409,9 +414,9 @@ then
 echo " Running script to compute UNI-DEN from UNI & inversions (if it doesn't exist already)"
 if [ -n "$sessid" ]
 then
-parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctUniDen $output_dir {1} {2} | tee -a $tuneup_log.{1}.{2}"
+parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctUniDen $output_dir $uniden_factor {1} {2} | tee -a $tuneup_log.{1}.{2}"
 else
-parallel -a $heudiconv_subjlist $popts "$execpath/etc/correctUniDen $output_dir {1} | tee -a $tuneup_log.{1}"
+parallel -a $heudiconv_subjlist $popts "$execpath/etc/correctUniDen $output_dir $uniden_factor {1} | tee -a $tuneup_log.{1}"
 fi
 
 fi
