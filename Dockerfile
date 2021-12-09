@@ -4,9 +4,6 @@ MAINTAINER <alik@robarts.ca>
 #heudiconv version:
 ENV HEUDICONVTAG v0.5.4
 
-#bids validator version:
-ENV BIDSTAG 1.2.5
-
 #pydeface version:
 ENV PYDEFACETAG v1.1.0
 
@@ -122,20 +119,9 @@ RUN mkdir -p /opt/tar2bids
 COPY . /opt/tar2bids
 
 ## Install bids-validator
-
-
-
 RUN apt-get update && \
-    apt-get install -y curl git && \
-    curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
-    apt-get remove -y curl && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN git clone https://github.com/bids-standard/bids-validator /opt/bids-validator && \
-    cd /opt/bids-validator && \
-    git checkout $BIDSTAG && \
-    npm install -g /opt/bids-validator/bids-validator
+    apt-get install -y git nodejs && apt-get install -y npm && \
+    npm install --global npm@^7 && npm install -g bids-validator
 
 #install gnu parallel
 RUN apt-get update &&  apt-get install -y parallel
