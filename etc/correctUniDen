@@ -5,21 +5,23 @@ if [ "$#" -lt 2 ]
 then
 
 echo "MP2RAGE sequence does not always produce the UNI-DEN, but can be the only T1w-like image (especially for 7T), so this script generates it if it does not exist.."
-    echo "Usage: $0 <in_bids> <subj ID> <session id (optional)>"
+    echo "Usage: $0 <in_bids> <uniden factor> <subj ID> <session id (optional)>"
 	exit 1
 fi 
+
 in_bids=$1
 
+uniden_factor=$2
 
 #assumes python script is in same folder as this wrapper -- eventually just replace this..
 exec_path=`dirname $0`
 
-subj=$2
+subj=$3
 subj=${subj##sub-} #strip off sub- if it exists, to make consistent
 
-if [ "$#" -gt 2 ]
+if [ "$#" -gt 3 ]
 then
-    ses=$3
+    ses=$4
 	ses=${ses##ses-} #strip off sub- if it exists, to make consistent
 fi
  
@@ -51,8 +53,8 @@ fi
 	then
 
 		new_t1w=${beforeacq}_acq-MP2RAGEpostproc_${afteracq_stripped}_T1w.nii.gz
-		echo $exec_path/mp2rage_genUniDen.py $uni $inv1 $inv2 $new_t1w
-		 $exec_path/mp2rage_genUniDen.py $uni $inv1 $inv2 $new_t1w
+		echo $exec_path/mp2rage_genUniDen.py $uni $inv1 $inv2 $new_t1w $uniden_factor
+		 $exec_path/mp2rage_genUniDen.py $uni $inv1 $inv2 $new_t1w $uniden_factor
 		
 		#copy a json from uni over -- TODO: edit json too
 		cp ${uni%%.nii.gz}.json ${new_t1w%%.nii.gz}.json
