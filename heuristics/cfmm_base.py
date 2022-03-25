@@ -584,7 +584,7 @@ def infotodict(seqinfo):
                 info[DIS3D_T2_star].append({'item': s.series_id})
 
         #spc T2w
-        if ('spc_T2' in s.series_description or 'T2w_SPC' in s.series_description or 'T2w_space' in s.series_description or 't2_space' in s.series_description or 't2_spc' in s.series_description or 'T2_spc' in s.series_description ): 
+        if ('spc_T2' in s.series_description or 'T2w_SPC' in s.series_description or 'T2w_space' in s.series_description or 't2_space' in s.series_description or 't2_spc' in s.series_description or 'T2_spc' in s.series_description.strip() ): 
             if ('dark-fluid' not in s.series_description ):
                 if ('ND' in (s.image_type[3].strip())):
                     info[spc_T2w].append({'item': s.series_id})
