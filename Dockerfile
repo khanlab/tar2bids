@@ -1,5 +1,5 @@
 FROM neurodebian:xenial
-MAINTAINER <alik@robarts.ca>
+LABEL maintainer="<alik@robarts.ca>"
 
 #heudiconv version:
 ENV HEUDICONVTAG v0.5.4
@@ -94,7 +94,7 @@ RUN export PATH="/opt/miniconda-latest/bin:$PATH" \
     && curl -fsSL --retry 5 -o "$conda_installer" https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     && bash "$conda_installer" -b -p /opt/miniconda-latest \
     && rm -f "$conda_installer" \
-    && conda update -yq -nbase conda \
+    && conda install -yq -nbase conda=4.10.3 \
     && conda config --system --prepend channels conda-forge \
     && conda config --system --set auto_update_conda false \
     && conda config --system --set show_channel_urls true \
