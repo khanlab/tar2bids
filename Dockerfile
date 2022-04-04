@@ -1,5 +1,8 @@
-FROM neurodebian:bullseye
+FROM debian:bullseye
 LABEL maintainer="<alik@robarts.ca>"
+
+# dcm2niix version
+ENV DCM2NIIXTAG v1.0.20210317
 
 #heudiconv version:
 ENV HEUDICONVTAG v0.5.4
@@ -10,19 +13,33 @@ ENV BIDSTAG 1.2.5
 #pydeface version:
 ENV PYDEFACETAG v1.1.0
 
-#from heudiconv Dockerfile (neurodocker):
-
 ARG DEBIAN_FRONTEND="noninteractive"
 
-ENV LANG="en_US.UTF-8" \
-    LC_ALL="en_US.UTF-8" \
-    ND_ENTRYPOINT="/neurodocker/startup.sh"
+# install dcm2niix
+RUN apt-get update -qq \
+    && apt-get install -y -q --no-install-recommends \
+        apt-utils=2.2.4 \
+        ca-certificates=20210119 \
+        locales=2.31-13+deb11u3 \
+        pigz=2.6-1 \
+        unzip=6.0-26 \
+        wget=1.21-1+deb11u1 \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && mkdir /opt/dcm2niix \
+    && wget -q -O /opt/dcm2niix/dcm2niix.zip https://github.com/rordenlab/dcm2niix/releases/download/${DCM2NIIXTAG}/dcm2niix_lnx.zip \
+    && unzip /opt/dcm2niix/dcm2niix.zip -d /opt/dcm2niix \
+    && rm /opt/dcm2niix/dcm2niix.zip
+ENV PATH /opt/dcm2niix:$PATH
+
 
 # install heudiconv
 RUN apt-get update -qq \
     && apt-get install -y -q --no-install-recommends \
-        heudiconv=0.9.0-1~nd110+1 \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+        python3=3.9.2-3 \
+        python3-pip=20.3.4-4+deb11u1 \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && pip install --no-cache-dir heudiconv==${HEUDICONVTAG}
+
 
 # install BIDS Validator
 RUN apt-get update -qq \
@@ -30,12 +47,11 @@ RUN apt-get update -qq \
         nodejs=12.22.5~dfsg-2~11u1 \
         npm=7.5.2+ds-2 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN npm install -g bids-validator@1.9.3
+RUN npm install -g bids-validator@${BIDSTAG}
 
 # install GNU parallel
 RUN apt-get update -qq \
     && apt-get install -y -q --no-install-recommends \
-        locales=2.31-13+deb11u3 \
         parallel=20161222-1.1 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
@@ -50,7 +66,6 @@ RUN apt-get update -qq \
         libopenblas-dev=0.3.13+ds-3 \
         python3-pip=20.3.4-4+deb11u1 \
         python3-setuptools=52.0.0-4 \
-        wget=1.21-1+deb11u1 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN pip install --no-cache-dir pytest===3.6.0 networkx==2.0
 ENV FSLDIR /opt/fsl
@@ -67,7 +82,7 @@ RUN apt-get update -qq \
         git=1:2.30.2-1 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && git clone https://github.com/poldracklab/pydeface /src/pydeface \
-    && git -C /src/pydeface checkout v1.1.0
+    && git -C /src/pydeface checkout ${PYDEFACETAG}
 WORKDIR /src/pydeface
 RUN python3 /src/pydeface/setup.py install
 WORKDIR /
