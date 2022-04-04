@@ -64,8 +64,6 @@ RUN apt-get update -qq \
     && apt-get install -y -q --no-install-recommends \
         libxml2-dev=2.9.10+dfsg-6.7+deb11u1 \
         libopenblas-dev=0.3.13+ds-3 \
-        python3-pip=20.3.4-4+deb11u1 \
-        python3-setuptools=52.0.0-4 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN pip install --no-cache-dir pytest===3.6.0 networkx==2.0
 ENV FSLDIR /opt/fsl
@@ -80,6 +78,7 @@ ENV PATH $FSLDIR/bin:$PATH
 RUN apt-get update -qq \
     && apt-get install -y -q --no-install-recommends \
         git=1:2.30.2-1 \
+        python3-setuptools=52.0.0-4 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && git clone https://github.com/poldracklab/pydeface /src/pydeface \
     && git -C /src/pydeface checkout ${PYDEFACETAG}
