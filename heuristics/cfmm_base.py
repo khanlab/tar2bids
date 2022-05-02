@@ -339,11 +339,11 @@ def infotodict(seqinfo):
                 elif ('DIS3D' in (s.image_type[4].strip())):
                     info[DIS3D_t1w].append({'item': s.series_id})
             if ('UNI_Images' in (s.series_description).strip()):
-                if ('DIS2D' in (s.image_type[3].strip())):
+                if ('DIS2D' in s.image_type):
                     info[DIS2D_uni_mp2rage].append({'item': s.series_id})
-                if ('DIS3D' in (s.image_type[3].strip())):
+                if ('DIS3D' in s.image_type):
                     info[DIS3D_uni_mp2rage].append({'item': s.series_id})
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in s.image_type):
                     info[uni_mp2rage].append({'item': s.series_id})
             if ('_INV2' in (s.series_description).strip()):
                 if ('DIS2D' in (s.image_type[3].strip())):
