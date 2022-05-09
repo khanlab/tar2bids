@@ -5,10 +5,10 @@ LABEL maintainer="<alik@robarts.ca>"
 ENV DCM2NIIXTAG v1.0.20210317
 
 #heudiconv version:
-ENV HEUDICONVTAG v0.5.4
+ENV HEUDICONVTAG v0.10.0
 
 #bids validator version:
-ENV BIDSTAG 1.2.5
+ENV BIDSTAG 1.9.3
 
 #pydeface version:
 ENV PYDEFACETAG v1.1.0
