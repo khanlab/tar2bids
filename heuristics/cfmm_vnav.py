@@ -88,8 +88,7 @@ def infotodict(seqinfo):
                             print('skipping pre-scan norm RMS combined T1w')
                             #info[t1w_norm].append({'item': s.series_id})
                         else:
-                            print('skipping no pre-scan norm RMS combined T1w')
-                            #info[t1w].append({'item': s.series_id})
+                            info[t1w].append({'item': s.series_id})
                     if 'M' in s.image_type: 
                         if 'NORM' in s.image_type:
                             print('skipping pre-scan norm separated echo T1w')
@@ -127,22 +126,22 @@ def infotodict(seqinfo):
         #dwi
         if 'dMRI' in s.series_description or 'diff' in s.series_description:
             if 'AP' in s.series_description:
-                if 'DIFFUSION' in s.image_type:
+                if 'DIFFUSION' in s.image_type and 'ORIGINAL' in s.image_type:
                     info[dwi_ap].append({'item': s.series_id})
                 elif 'SBRef' in s.series_description:
                     info[dwi_ap_sbref].append({'item': s.series_id})
             if 'PA' in s.series_description:
-                if 'DIFFUSION' in s.image_type:
+                if 'DIFFUSION' in s.image_type and 'ORIGINAL' in s.image_type:
                     info[dwi_pa].append({'item': s.series_id})
                 elif 'SBRef' in s.series_description:
                     info[dwi_pa_sbref].append({'item': s.series_id})
             if 'LR' in s.series_description:
-                if 'DIFFUSION' in s.image_type:
+                if 'DIFFUSION' in s.image_type and 'ORIGINAL' in s.image_type:
                     info[dwi_lr].append({'item': s.series_id})
                 elif 'SBRef' in s.series_description:
                     info[dwi_lr_sbref].append({'item': s.series_id})
             if 'RL' in s.series_description:
-                if 'DIFFUSION' in s.image_type:
+                if 'DIFFUSION' in s.image_type and 'ORIGINAL' in s.image_type:
                     info[dwi_rl].append({'item': s.series_id})
                 elif 'SBRef' in s.series_description:
                     info[dwi_rl_sbref].append({'item': s.series_id})
