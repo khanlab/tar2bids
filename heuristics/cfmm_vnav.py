@@ -38,6 +38,10 @@ def infotodict(seqinfo):
     dwi_ap_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-AP_run-{item}_sbref')
     dwi_pa = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-PA_run-{item}_dwi')
     dwi_pa_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-PA_run-{item}_sbref')
+    dwi_lr = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-LR_run-{item}_dwi')
+    dwi_lr_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-LR_run-{item}_sbref')
+    dwi_rl = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-RL_run-{item}_dwi')
+    dwi_rl_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-RL_run-{item}_sbref')
     
 
 
@@ -66,6 +70,7 @@ def infotodict(seqinfo):
          movie_ap:[],movie_ap_sbref:[],
          movie_pa:[],movie_pa_sbref:[],
          dwi_ap:[],dwi_pa:[],dwi_ap_sbref:[],dwi_pa_sbref:[],
+         dwi_lr:[],dwi_rl:[],dwi_lr_sbref:[],dwi_rl_sbref:[],
          fmap_spinecho_ap:[],fmap_spinecho_pa:[]}
 
     for idx, s in enumerate(seqinfo):
@@ -120,26 +125,27 @@ def infotodict(seqinfo):
 
 
         #dwi
-        if 'dMRI_dir98_AP' in s.series_description:
-            if 'DIFFUSION' in s.image_type:
-                info[dwi_98_ap].append({'item': s.series_id})
-            elif 'SBRef' in s.series_description:
-                info[dwi_98_ap_sbref].append({'item': s.series_id})
-        if 'dMRI_dir98_PA' in s.series_description:
-            if 'DIFFUSION' in s.image_type:
-                info[dwi_98_pa].append({'item': s.series_id})
-            elif 'SBRef' in s.series_description:
-                info[dwi_98_pa_sbref].append({'item': s.series_id})
-        if 'dMRI_dir99_AP' in s.series_description:
-            if 'DIFFUSION' in s.image_type:
-                info[dwi_99_ap].append({'item': s.series_id})
-            elif 'SBRef' in s.series_description:
-                info[dwi_99_ap_sbref].append({'item': s.series_id})
-        if 'dMRI_dir99_PA' in s.series_description:
-            if 'DIFFUSION' in s.image_type:
-                info[dwi_99_pa].append({'item': s.series_id})
-            elif 'SBRef' in s.series_description:
-                info[dwi_99_pa_sbref].append({'item': s.series_id})
+        if 'dMRI' in s.series_description or 'diff' in s.series_description:
+            if 'AP' in s.series_description:
+                if 'DIFFUSION' in s.image_type:
+                    info[dwi_ap].append({'item': s.series_id})
+                elif 'SBRef' in s.series_description:
+                    info[dwi_ap_sbref].append({'item': s.series_id})
+            if 'PA' in s.series_description:
+                if 'DIFFUSION' in s.image_type:
+                    info[dwi_pa].append({'item': s.series_id})
+                elif 'SBRef' in s.series_description:
+                    info[dwi_pa_sbref].append({'item': s.series_id})
+            if 'LR' in s.series_description:
+                if 'DIFFUSION' in s.image_type:
+                    info[dwi_lr].append({'item': s.series_id})
+                elif 'SBRef' in s.series_description:
+                    info[dwi_lr_sbref].append({'item': s.series_id})
+            if 'RL' in s.series_description:
+                if 'DIFFUSION' in s.image_type:
+                    info[dwi_rl].append({'item': s.series_id})
+                elif 'SBRef' in s.series_description:
+                    info[dwi_rl_sbref].append({'item': s.series_id})
                                  
 
         #rs func (incl opp phase enc)
