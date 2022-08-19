@@ -1,6 +1,6 @@
 import os
 
-# Adaptation of HCP-Lifespan protocol to the pediatric epilepsy imaging (LOBE) study
+# Adaptation of HCP-Lifespan & LOBE protocol 
 # Requires tar2bids > v0.0.5h for vNav clean-up
 
 def create_key(template, outtype=('nii.gz'), annotation_classes=None):
@@ -34,15 +34,11 @@ def infotodict(seqinfo):
     t2w_basic = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-SPACE_run-{item}_T2w')
 
     #Diffusion
-    dwi_98_ap = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-98_dir-AP_run-{item}_dwi')
-    dwi_98_ap_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-98_dir-AP_run-{item}_sbref')
-    dwi_98_pa = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-98_dir-PA_run-{item}_dwi')
-    dwi_98_pa_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-98_dir-PA_run-{item}_sbref')
-    dwi_99_ap = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-99_dir-AP_run-{item}_dwi')
-    dwi_99_ap_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-99_dir-AP_run-{item}_sbref')
-    dwi_99_pa = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-99_dir-PA_run-{item}_dwi')
-    dwi_99_pa_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_acq-99_dir-PA_run-{item}_sbref')
-
+    dwi_ap = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-AP_run-{item}_dwi')
+    dwi_ap_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-AP_run-{item}_sbref')
+    dwi_pa = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-PA_run-{item}_dwi')
+    dwi_pa_sbref = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_dir-PA_run-{item}_sbref')
+    
 
 
     #Field Maps:
@@ -69,15 +65,14 @@ def infotodict(seqinfo):
          rest_pa:[],rest_pa_sbref:[],
          movie_ap:[],movie_ap_sbref:[],
          movie_pa:[],movie_pa_sbref:[],
-         dwi_98_ap:[],dwi_98_pa:[],dwi_98_ap_sbref:[],dwi_98_pa_sbref:[],
-         dwi_99_ap:[],dwi_99_pa:[],dwi_99_ap_sbref:[],dwi_99_pa_sbref:[],
+         dwi_ap:[],dwi_pa:[],dwi_ap_sbref:[],dwi_pa_sbref:[],
          fmap_spinecho_ap:[],fmap_spinecho_pa:[]}
 
     for idx, s in enumerate(seqinfo):
 
 
         # T1w images
-        if 'T1w_MPR' in s.series_description:
+        if 'T1w' in s.series_description:
             if 'vNav' in s.series_description:
                 if 'setter' in s.series_description:
                     if 'MOSAIC' in s.image_type:
@@ -102,17 +97,18 @@ def infotodict(seqinfo):
 
 
         #T2w images
-        if 'T2w_SPC_vNav_setter' in s.series_description:
-            if 'MOSAIC' in s.image_type:
-                info[t2w_vnavs].append({'item': s.series_id})
-        elif ('T2w_SPC_800iso_vNav' in s.series_description):
-            if 'NORM' in s.image_type:
-                print('skipping pre-scan norm T2w')
-#                info[t2w_norm].append({'item': s.series_id}) 
+        if 'T2w' in s.series_description:
+            if 'setter' in s.series_description:
+                if 'MOSAIC' in s.image_type:
+                    info[t2w_vnavs].append({'item': s.series_id})
+            elif 'vNav' in s.series_description:
+                if 'NORM' in s.image_type:
+                    print('skipping pre-scan norm T2w')
+#                    info[t2w_norm].append({'item': s.series_id}) 
+                else:
+                    info[t2w].append({'item': s.series_id}) 
             else:
-                info[t2w].append({'item': s.series_id}) 
-        elif ('T2w_SPC' in s.series_description):
-            info[t2w_basic].append({'item': s.series_id})
+                info[t2w_basic].append({'item': s.series_id})
     
         #spinecho field maps
 
