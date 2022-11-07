@@ -440,6 +440,10 @@ python3 $execpath/etc/merge_vNav.py $output_dir
 #remove scans.tsv files as they may be out of date after corrections
 rm -f $output_dir/*/*_scans.tsv $output_dir/*/*/*_scans.tsv
 
+#remove .bval and .bvec files from fmap
+rm -f $output_dir/*/fmap/*.bval $output_dir/*/*/fmap/*.bval
+rm -f $output_dir/*/fmap/*.bvec $output_dir/*/*/fmap/*.bvec
+
 
 if [ "$do_deface" = "1" ]
 then
