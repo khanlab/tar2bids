@@ -17,7 +17,8 @@ function usage {
 	echo "	-o <output_dir> : default=$output_dir"
 	echo "	-N <num parallel cores> : default=0  (max cores)"
 	echo "	-h <heuristic.py> : default=$heuristic"
-	echo "	-w <tempdir>  (--tempdir in heudiconv)" 
+	echo "	-w <tempdir>  (--tempdir in heudiconv)"
+	echo "	-b <bidsignore> : default=$execpath/etc/bidsignore"
 	echo "	-O \"<additional heudiconv options>\" : default=$heudi_opts"
 	echo "	-C : copy tarfiles to BIDS sourcedata folder" 
 	echo "	-D : enable defacing of T1w images : default will not deface"
@@ -49,7 +50,7 @@ do_dcm2niix=0
 uniden_factor=6
 
 
-while getopts "N:o:h:O:P:T:w:CDxU:" options; do
+while getopts "N:o:h:O:P:T:w:b:CDxU:" options; do
  case $options in
     N ) echo "  Overriding number of cores: $OPTARG" >&2
 	ncores=$OPTARG;;
@@ -67,6 +68,8 @@ while getopts "N:o:h:O:P:T:w:CDxU:" options; do
 	tarfile_search="$OPTARG";;
     w ) echo "  Using --tempdir=$OPTARG" >&2
     tempdir=$OPTARG;;
+    b ) echo "  Using custom .bidsignore: $OPTARG" >&2
+	bidsignore="$OPTARG";;
     C ) echo "  Copying source tarfiles to sourcedata" >&2
     copytar=1;;
     x ) echo "  Running dcm2niix with no heuristics" >&2
@@ -469,8 +472,13 @@ do
     grep -v CogAtlasID $json > $json.new && mv -v $json.new $json
 done
 
-echo "  Adding default .bidsignore file..."
-cp -v $execpath/etc/bidsignore $output_dir/.bidsignore
+if  [[ -n "$bidsignore" ]]; then
+  echo "  Adding custom .bidsignore file..."
+  cp -v "$bidsignore" "$output_dir/.bidsignore"
+else
+  echo "  Adding default .bidsignore file..."
+  cp -v $execpath/etc/bidsignore $output_dir/.bidsignore
+fi
 
 echo "  Removing _ROI#.nii.gz files (unused scale bars from qMRI)..."
 rm -vf $output_dir/sub*/*/*ROI[0-9].nii.gz $output_dir/sub*/ses*/*ROI[0-9].nii.gz 2> /dev/null
