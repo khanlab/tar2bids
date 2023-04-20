@@ -23,32 +23,32 @@ def correctFieldMapJson(bids_dir,sub,ses=None):
     sub_dir=os.path.join(bids_dir,sub_path_prefix)
     sub_root_dir=os.path.join(bids_dir,sub_root) #without session
 
-    fmri_json_file=os.path.join(sub_dir,'fmap','{}_acq-EPI_dir-PA_epi.json'.format(sub_prefix))
+    for fmri_json_file in glob(os.path.join(sub_dir,'fmap','{}_acq-EPI_dir-*_epi.json'.format(sub_prefix))):
 
-    #debug
-    #print(fmri_json_file)
+        #debug
+        print(fmri_json_file)
 
-    #load json files
-    with open(fmri_json_file, 'r') as f:
-        fmri_json = json.load(f,object_pairs_hook=collections.OrderedDict)
+        #load json files
+        with open(fmri_json_file, 'r') as f:
+            fmri_json = json.load(f,object_pairs_hook=collections.OrderedDict)
 
-    # apply to all bold images
-    cwd=os.getcwd()
-    os.chdir(sub_root_dir)
-    if ses:
-        all_bold = glob.glob(os.path.join('{}'.format(ses),'func','{}_*_bold.nii.gz'.format(sub_prefix)))
-    else:
-        all_bold = glob.glob(os.path.join('func','{}_*_bold.nii.gz'.format(sub_prefix)))
+        # apply to all bold images
+        cwd=os.getcwd()
+        os.chdir(sub_root_dir)
+        if ses:
+            all_bold = glob.glob(os.path.join('{}'.format(ses),'func','{}_*_bold.nii.gz'.format(sub_prefix)))
+        else:
+            all_bold = glob.glob(os.path.join('func','{}_*_bold.nii.gz'.format(sub_prefix)))
 
-    os.chdir(cwd)
-    
-    fmri_json["IntendedFor"]=all_bold
+        os.chdir(cwd)
+        
+        fmri_json["IntendedFor"]=all_bold
 
-    #update json file
-    os.system("chmod a+w {}".format(fmri_json_file))
-    with open(fmri_json_file, 'w') as f:
-         json.dump(fmri_json, f, indent=4, separators=(',', ': '))
-    os.system("chmod a-w {}".format(fmri_json_file))
+        #update json file
+        os.system("chmod a+w {}".format(fmri_json_file))
+        with open(fmri_json_file, 'w') as f:
+            json.dump(fmri_json, f, indent=4, separators=(',', ': '))
+        os.system("chmod a-w {}".format(fmri_json_file))
 
 
 if __name__=="__main__":
