@@ -23,7 +23,7 @@ def correctFieldMapJson(bids_dir,sub,ses=None):
     sub_dir=os.path.join(bids_dir,sub_path_prefix)
     sub_root_dir=os.path.join(bids_dir,sub_root) #without session
 
-    for fmri_json_file in glob(os.path.join(sub_dir,'fmap','{}_acq-EPI_dir-*_epi.json'.format(sub_prefix))):
+    for fmri_json_file in glob.glob(os.path.join(sub_dir,'fmap','{}_acq-EPI_dir-*_epi.json'.format(sub_prefix))):
 
         #debug
         print(fmri_json_file)
