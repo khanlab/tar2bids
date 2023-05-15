@@ -12,7 +12,8 @@ import nibabel as nib
 
 
 
-multiecho_dir = sys.argv[1]
+bids_dir = sys.argv[1]
+multiecho_dir = glob.glob(f'{bids_dir}/**/anat',recursive=True)[0]
 print('multi-echo corrector')
 print(multiecho_dir)
 
