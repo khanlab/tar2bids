@@ -441,7 +441,7 @@ fi
 python3 $execpath/etc/merge_vNav.py $output_dir
 
 #average m3mprage images
-python3 $execpath/etc/memp2rage_bids_corrector.py $output_dir/*/anat
+python3 $execpath/etc/memp2rage_bids_corrector.py $output_dir
 
 #remove scans.tsv files as they may be out of date after corrections
 rm -f $output_dir/*/*_scans.tsv $output_dir/*/*/*_scans.tsv
