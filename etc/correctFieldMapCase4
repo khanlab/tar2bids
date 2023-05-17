@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ "$#" -lt 1 ]
+then
+    echo "Usage: $0 <in_bids> <subj ID> <session id (optional)>"
+	exit 1
+fi 
+in_bids=$1
+
+exec_path=`dirname $0`
+
+
+subj=$2
+	subj=${subj##sub-} #strip off sub- if it exists, to make consistent
+if [ "$#" -gt 2 ]
+then
+    ses=$3
+	ses=${ses##ses-} #strip off sub- if it exists, to make consistent
+fi
+ 
+#correct field map json files
+
+if [ -n "$ses" ]
+then
+	$exec_path/correctFieldMapJsonCase4.py $in_bids sub-$subj ses-$ses
+else
+	$exec_path/correctFieldMapJsonCase4.py $in_bids sub-$subj
+fi
+
