@@ -330,6 +330,7 @@ then
 #check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
 Nfmaps=`ls $output_dir/sub-*/ses-*/fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
 NfmapsCase2=`ls $output_dir/sub-*/ses-*/fmap/*twomagphase1.nii.gz 2>/dev/null | wc -l`
+NfmapsCase4=`ls $output_dir/sub-*/ses-*/fmap/*epi.nii.gz 2>/dev/null | wc -l`
 Ngre=`ls $output_dir/sub-*/ses-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
 Nbold=`ls $output_dir/sub-*/ses-*/func/*bold?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/ses-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
@@ -342,6 +343,7 @@ else
 #check if certain files exist that need further corrections: (the following simply suppresses stderr: 1>/dev/null 2>&1)
 Nfmaps=`ls $output_dir/sub-*/fmap/*phasediff.nii.gz 2>/dev/null | wc -l`
 NfmapsCase2=`ls $output_dir/sub-*/fmap/*twomagphase1.nii.gz 2>/dev/null | wc -l`
+NfmapsCase4=`ls $output_dir/sub-*/fmap/*epi.nii.gz 2>/dev/null | wc -l`
 Ngre=`ls $output_dir/sub-*/anat/*GRE?.nii.gz 2>/dev/null | wc -l`
 Nbold=`ls $output_dir/sub-*/func/*bold?.nii.gz 2>/dev/null | wc -l`
 Nmemp2rage=`ls $output_dir/sub-*/anat/*MP2RAGE?.nii.gz 2>/dev/null | wc -l`
@@ -381,6 +383,19 @@ fi
 
 fi
 
+
+if [ ! "$NfmapsCase4" = 0 ]
+then
+echo "  Running bids correction from phasediff fieldmap data..."
+
+if [ -n "$sessid" ]
+then
+parallel -a $heudiconv_subjlist -a $heudiconv_sesslist $popts "$execpath/etc/correctFieldMapCase4 $output_dir {1} {2} | tee -a $tuneup_log.{1}.{2} " 
+else
+parallel -a $heudiconv_subjlist  $popts "$execpath/etc/correctFieldMapCase4 $output_dir {1} | tee -a $tuneup_log.{1}" 
+fi
+
+fi
 
 
 if [ ! "$Ngre" = 0 -o ! "$Nmemp2rage" = 0 -o ! "$Nsa2rage_complex" = 0 -o ! "$Nmemprage" = 0 ]
