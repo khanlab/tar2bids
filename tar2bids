@@ -499,7 +499,7 @@ else
 fi
 
 echo "  Removing _ROI#.nii.gz files (unused scale bars from qMRI)..."
-rm -vf $output_dir/sub*/*/*ROI[0-9].nii.gz $output_dir/sub*/ses*/*ROI[0-9].nii.gz 2> /dev/null
+rm -vf $output_dir/sub*/*/*ROI[0-9].nii.gz $output_dir/sub*/ses*/*/*ROI[0-9].nii.gz 2> /dev/null
 
 echo "  Running bids-validator..."
 bids-validator $output_dir | tee  $validator_out
