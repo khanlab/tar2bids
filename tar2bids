@@ -465,6 +465,9 @@ rm -f $output_dir/*/*_scans.tsv $output_dir/*/*/*_scans.tsv
 rm -f $output_dir/*/fmap/*.bval $output_dir/*/*/fmap/*.bval
 rm -f $output_dir/*/fmap/*.bvec $output_dir/*/*/fmap/*.bvec
 
+# remove .bval and .bvec files from anat (dcm2niix picking up header suggesting MP2RAGE is diffusion)
+rm -f $output_dir/*/anat/*.bval $output_dir/*/*/anat/*.bval
+rm -f $output_dir/*/anat/*.bvec $output_dir/*/*/anat/*.bvec
 
 if [ "$do_deface" = "1" ]
 then
