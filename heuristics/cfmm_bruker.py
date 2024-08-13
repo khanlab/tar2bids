@@ -1,6 +1,12 @@
-import os
+from heudiconv.utils import set_readonly, save_json
+import json
+import logging
+from pybruker.jcamp import jcamp_read
+import pydicom
 
-def create_key(template, outtype=('nii.gz'), annotation_classes=None):
+lgr = logging.getLogger("heudiconv")
+
+def create_key(template, outtype=('nii.gz',), annotation_classes=None):
     if template is None or not template:
         raise ValueError('Template must be a valid format string')
     return (template, outtype, annotation_classes)
@@ -42,7 +48,10 @@ def infotodict(seqinfo):
 
     T2_TurboRARE = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-TurboRARE_run-{item:02d}_T2w')
 
-    info = { FLASH_T1:[],FLASH_MT_ON:[],FLASH_MT_OFF:[],dwi:[],MP2RAGE_T1map:[],MP2RAGE_invs:[],MP2RAGE_UNI:[],MP2RAGE_T1map_l:[],MP2RAGE_invs_l:[],MP2RAGE_UNI_l:[],MEGRE_mag:[],MEGRE_complex:[],T2_TurboRARE:[]}
+    # where does bids_subject_session_prefix come from? or item? heudiconv special variables? can we get the task type (visual/audio) somehow?
+    BLOCK_EPI =  create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-unknown_acq-BlockEPI_run-{item:02d}_bold')
+
+    info = { FLASH_T1:[],FLASH_MT_ON:[],FLASH_MT_OFF:[],dwi:[],MP2RAGE_T1map:[],MP2RAGE_invs:[],MP2RAGE_UNI:[],MP2RAGE_T1map_l:[],MP2RAGE_invs_l:[],MP2RAGE_UNI_l:[],MEGRE_mag:[],MEGRE_complex:[],T2_TurboRARE:[],BLOCK_EPI:[]}
 
     for idx, s in enumerate(seqinfo):
 
@@ -82,7 +91,21 @@ def infotodict(seqinfo):
                 info[MEGRE_mag].append({'item': s.series_id})
         elif ( 'T2_TurboRARE' in s.series_description.strip()):
             info[T2_TurboRARE].append({'item': s.series_id})
-
-
+        elif ( 'blockEPI' in s.series_description.strip()):
+            info[BLOCK_EPI].append({'item': s.series_id})
    
     return info
+
+def custom_callable(outfile, outtype, infiles):
+    dcm_filename = infiles[0]
+    bruker_parameters_jcamp = pydicom.read_file(dcm_filename, stop_before_pixels=True).get((0x0177, 0x1100))
+    if bruker_parameters_jcamp:
+        jcamp_dict = jcamp_read(bruker_parameters_jcamp.value)
+        scaninfo_filename = outfile + '.json'
+        lgr.info(f"Adding bruker parameters to {scaninfo_filename}")
+        with open(scaninfo_filename, 'r') as f:
+            info_dict = json.load(f)
+        info_dict['cfmm_bruker_parameters'] = jcamp_dict
+        # if blockEPI then use bruker parameters to create events.tsv
+        save_json(scaninfo_filename, info_dict)
+        set_readonly(scaninfo_filename)
