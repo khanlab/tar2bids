@@ -11,6 +11,7 @@ def create_key(template, outtype=('nii.gz',), annotation_classes=None):
         raise ValueError('Template must be a valid format string')
     return (template, outtype, annotation_classes)
 
+
 def infotodict(seqinfo):
     """Heuristic evaluator for determining which runs belong where
 
@@ -33,11 +34,9 @@ def infotodict(seqinfo):
     FLASH_MT_OFF = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MToff_run-{item:02d}_FLASH')
     dwi = create_key('{bids_subject_session_dir}/dwi/{bids_subject_session_prefix}_run-{item:02d}_dwi')
 
-    MP2RAGE_T1map = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-MP2RAGE_run-{item:02d}_T1map')
     MP2RAGE_invs = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-Inversions_run-{item:02d}_MP2RAGE')
     MP2RAGE_UNI = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-UNI_run-{item:02d}_T1w')
 
-    MP2RAGE_T1map_l = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-LoResMP2RAGE_run-{item:02d}_T1map')
     MP2RAGE_invs_l = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-LoResInversions_run-{item:02d}_MP2RAGE')
     MP2RAGE_UNI_l = create_key('{bids_subject_session_dir}/anat/{bids_subject_session_prefix}_acq-LoResUNI_run-{item:02d}_T1w')
 
@@ -51,7 +50,7 @@ def infotodict(seqinfo):
     # where does bids_subject_session_prefix come from? or item? heudiconv special variables? can we get the task type (visual/audio) somehow?
     BLOCK_EPI =  create_key('{bids_subject_session_dir}/func/{bids_subject_session_prefix}_task-unknown_acq-BlockEPI_run-{item:02d}_bold')
 
-    info = { FLASH_T1:[],FLASH_MT_ON:[],FLASH_MT_OFF:[],dwi:[],MP2RAGE_T1map:[],MP2RAGE_invs:[],MP2RAGE_UNI:[],MP2RAGE_T1map_l:[],MP2RAGE_invs_l:[],MP2RAGE_UNI_l:[],MEGRE_mag:[],MEGRE_complex:[],T2_TurboRARE:[],BLOCK_EPI:[]}
+    info = { FLASH_T1:[],FLASH_MT_ON:[],FLASH_MT_OFF:[],dwi:[],MP2RAGE_invs:[],MP2RAGE_UNI:[],MP2RAGE_invs_l:[],MP2RAGE_UNI_l:[],MEGRE_mag:[],MEGRE_complex:[],T2_TurboRARE:[],BLOCK_EPI:[]}
 
     for idx, s in enumerate(seqinfo):
 
@@ -65,23 +64,19 @@ def infotodict(seqinfo):
             else:
                 info[FLASH_MT_ON].append({'item': s.series_id})
                 
-        elif ('DTI' in s.protocol_name):
+        elif ('dti' in s.protocol_name.lower()):
             info[dwi].append({'item': s.series_id})
         
-        elif ('MP2RAGE' in s.series_description.strip()):
+        elif ('cfmmMP2RAGE' in s.series_description.strip()):
           if (s.dim1 > 64):
             if  ('0001' in s.dcm_dir_name.strip()):
-                info[MP2RAGE_T1map].append({'item': s.series_id})
-            elif  ('0002' in s.dcm_dir_name.strip()):
                 info[MP2RAGE_invs].append({'item': s.series_id})
-            else:
+            elif  ('0002' in s.dcm_dir_name.strip()):
                 info[MP2RAGE_UNI].append({'item': s.series_id})
           else:
             if  ('0001' in s.dcm_dir_name.strip()):
-                info[MP2RAGE_T1map_l].append({'item': s.series_id})
-            elif  ('0002' in s.dcm_dir_name.strip()):
                 info[MP2RAGE_invs_l].append({'item': s.series_id})
-            else:
+            elif  ('0002' in s.dcm_dir_name.strip()):
                 info[MP2RAGE_UNI_l].append({'item': s.series_id})
 
         elif ('T2star' in s.series_description.strip()):
