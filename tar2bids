@@ -213,13 +213,20 @@ do
 	#  x is studyID, for instance 1
 	if [[ $patient_etc == *_[0-9].*.* ]]; then
 	    patient=${patient_etc%_[0-9].*.*}
-	fi
 
 	#PI_project_studydate_PatientName_StudyDate_xy.hashcode.tar
 	#  StudyDate: for instance, 20190101
 	#  xy is StudyID, for instance, 01
-	if [[ $patient_etc == *_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.* ]]; then
+	elif [[ $patient_etc == *_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.* ]]; then
 	    patient=${patient_etc%_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9].*.*}
+
+	#PI_project_studydate_PatientName_StudyID.hashcode.tar
+	#  x is studyID, for instance 1
+    else
+	    studyid_etc=`echo $patient_etc | awk  -F '_' '{print $NF}'`
+        patient=${patient_etc%_${studyid_etc}}
+        echo "studyid_etc: ${studyid_etc}"
+        echo "patient: ${patient}"
 	fi
 
 	# if $patient is empty, skip it.
