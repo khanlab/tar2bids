@@ -2,10 +2,11 @@ FROM debian:bullseye
 LABEL maintainer="<alik@robarts.ca>"
 
 # dcm2niix version
-ENV DCM2NIIXTAG v1.0.20230411
+ENV DCM2NIIXTAG v1.0.20250506 
 
 #heudiconv version:
-ENV HEUDICONVTAG unstacked_dcm
+ENV HEUDICONVOWNER nipy
+ENV HEUDICONVTAG v1.3.3
 
 #bids validator version:
 ENV BIDSTAG 1.9.7
@@ -44,7 +45,7 @@ RUN apt-get update -qq \
         git \
         python3-setuptools \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && git clone https://github.com/AlanKuurstra/heudiconv.git /src/heudiconv \
+    && git clone https://github.com/${HEUDICONVOWNER}/heudiconv.git /src/heudiconv \
     && git -C /src/heudiconv checkout ${HEUDICONVTAG}
 WORKDIR /src/heudiconv
 RUN python3 -m pip install --no-cache-dir -r /src/heudiconv/requirements.txt \
