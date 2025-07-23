@@ -2,11 +2,11 @@ FROM debian:bullseye
 LABEL maintainer="<alik@robarts.ca>"
 
 # dcm2niix version
-ENV DCM2NIIXTAG v1.0.20240202
+ENV DCM2NIIXTAG v1.0.20250506 
 
 #heudiconv version:
-ENV HEUDICONVOWNER akhanf
-ENV HEUDICONVTAG v1.3.2+enhdicom.0
+ENV HEUDICONVOWNER nipy
+ENV HEUDICONVTAG v1.3.3
 
 #bids validator version:
 ENV BIDSTAG 1.9.7
