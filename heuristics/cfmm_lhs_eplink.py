@@ -340,17 +340,17 @@ def infotodict(seqinfo):
                     info[DIS2D_inv1_mp2rage].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_inv1_mp2rage].append({'item': s.series_id})
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[inv1_mp2rage].append({'item': s.series_id})
             if ('T1_Images' in (s.series_description).strip()):
                 if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_t1map].append({'item': s.series_id})                                
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_t1map].append({'item': s.series_id})
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[t1map].append({'item': s.series_id})
             if ('UNI-DEN' in (s.series_description).strip()):
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[t1w].append({'item': s.series_id})
                 elif ('DIS2D' in (s.image_type[4].strip())):
                     info[DIS2D_t1w].append({'item': s.series_id})
@@ -361,14 +361,14 @@ def infotodict(seqinfo):
                     info[DIS2D_uni_mp2rage].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_uni_mp2rage].append({'item': s.series_id})
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[uni_mp2rage].append({'item': s.series_id})
             if ('_INV2' in (s.series_description).strip()):
                 if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_inv2_mp2rage].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_inv2_mp2rage].append({'item': s.series_id})
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[inv2_mp2rage].append({'item': s.series_id})
 
 
@@ -377,7 +377,7 @@ def infotodict(seqinfo):
                 info[DIS2D_t1w_mprage].append({'item': s.series_id})
             if ('DIS3D' in (s.image_type[3].strip())):
                 info[DIS3D_t1w_mprage].append({'item': s.series_id})
-            if ('ND' in (s.image_type[3].strip())):
+            if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                 info[t1w_mprage].append({'item': s.series_id})
 
 
@@ -393,7 +393,7 @@ def infotodict(seqinfo):
 
     #sa2rage
         if ('sa2rage' in s.series_description):
-            if ('ND' in (s.image_type[3].strip())):
+            if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                 if ('invContrast1' in s.series_description or 'INV1' in s.series_description):
                     info[inv_1_sa2rage] = [s.series_id]
                 if ('invContrast2' in s.series_description or 'INV2' in s.series_description):
@@ -421,7 +421,7 @@ def infotodict(seqinfo):
 
 
         if ('pd_t2_tse_tra' in s.series_description or 'pd+t2_tse_tra' in s.series_description): 
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[pd_t2_tse_tra].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_pd_t2_tse_tra].append({'item': s.series_id})
@@ -431,7 +431,7 @@ def infotodict(seqinfo):
 
                 #tse cor T2w
         elif ('pd_t2_tse_cor' in s.series_description or 'pd+t2_tse_cor' in s.series_description): 
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[pd_t2_tse_cor].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_pd_t2_tse_cor].append({'item': s.series_id})
@@ -439,7 +439,7 @@ def infotodict(seqinfo):
                     info[DIS2D_pd_t2_tse_cor].append({'item': s.series_id})
 
         elif ('pd_t2_tse' in s.series_description or 'pd+t2_tse' in s.series_description): 
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[pd_t2_tse].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_pd_t2_tse].append({'item': s.series_id})
@@ -449,7 +449,7 @@ def infotodict(seqinfo):
 
 
         elif ('t2_tse_tra' in s.series_description): 
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[t2_tse_tra].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_t2_tse_tra].append({'item': s.series_id})
@@ -459,7 +459,7 @@ def infotodict(seqinfo):
 
                 #tse cor T2w
         elif ('t2_tse_cor' in s.series_description): 
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[t2_tse_cor].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_t2_tse_cor].append({'item': s.series_id})
@@ -468,7 +468,7 @@ def infotodict(seqinfo):
 
 
         elif ('t2_tse' in s.series_description): 
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[t2_tse].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_t2_tse].append({'item': s.series_id})
@@ -476,7 +476,7 @@ def infotodict(seqinfo):
                     info[DIS2D_t2_tse].append({'item': s.series_id})
 
         if ('pd_tse_tra' in s.series_description): 
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[pd_tse_tra].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_pd_tse_tra].append({'item': s.series_id})
@@ -486,7 +486,7 @@ def infotodict(seqinfo):
 
                 #tse cor T2w
         elif ('pd_tse_cor' in s.series_description): 
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[pd_tse_cor].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_pd_tse_cor].append({'item': s.series_id})
@@ -495,7 +495,7 @@ def infotodict(seqinfo):
 
 
         elif ('pd_tse' in s.series_description): 
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[pd_tse].append({'item': s.series_id})
                 if ('DIS3D' in (s.image_type[3].strip())):
                     info[DIS3D_pd_tse].append({'item': s.series_id})
@@ -547,7 +547,7 @@ def infotodict(seqinfo):
         #susceptibility ND multiecho
         if ('susc' in s.series_description or 'gre3d' in s.series_description or 't1_fl3d_p4_iso' in s.series_description ):
             if ('M' in (s.image_type[2].strip())):
-                 if ('ND' in (s.image_type[3].strip())):
+                 if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[mag_echo_GRE] =  [s.series_id]
                  if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_mag_echo_GRE] =  [s.series_id]
@@ -555,7 +555,7 @@ def infotodict(seqinfo):
                     info[DIS3D_mag_echo_GRE] =  [s.series_id]
 
             if ('P' in (s.image_type[2].strip())):
-                 if ('ND' in (s.image_type[3].strip())):
+                 if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[phase_echo_GRE] =  [s.series_id]
                  if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_phase_echo_GRE] =  [s.series_id]
@@ -582,19 +582,19 @@ def infotodict(seqinfo):
         #multi-echo GRE with compressed sensing
         if ('gre_CS_C41' in s.series_description):
             if ('M' in (s.image_type[2].strip())):
-                 if ('ND' in (s.image_type[3].strip())):
+                 if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[mag_echo_CS_GRE] =  [s.series_id]
                 
 
             if ('P' in (s.image_type[2].strip())):
-                 if ('ND' in (s.image_type[3].strip())):
+                 if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[phase_echo_CS_GRE] =  [s.series_id]
       
 
         # MTon GRE (excludes phase image since not needed)
         if ('gre_ptx_MT_On' in s.series_description ):
             if ('M' in (s.image_type[2].strip())):
-                 if ('ND' in (s.image_type[3].strip())):
+                 if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[mag_MT_on_GRE].append({'item': s.series_id})
                  if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_mag_MT_on_GRE].append({'item': s.series_id})
@@ -603,7 +603,7 @@ def infotodict(seqinfo):
         #MToff GRE
         if ('gre_ptx_MT_Off' in s.series_description ):
             if ('M' in (s.image_type[2].strip())):
-                 if ('ND' in (s.image_type[3].strip())):
+                 if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[mag_MT_off_GRE].append({'item': s.series_id})
                  if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_mag_MT_off_GRE].append({'item': s.series_id})
@@ -614,7 +614,7 @@ def infotodict(seqinfo):
 
         #T2star
         if ('T2Star' in s.series_description):
-            if ('ND' in (s.image_type[3].strip())):
+            if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                 info[T2_star].append({'item': s.series_id})
             if ('DIS2D' in (s.image_type[3].strip())):
                 info[DIS2D_T2_star].append({'item': s.series_id})
@@ -624,7 +624,7 @@ def infotodict(seqinfo):
         #spc T2w
         if ('spc_T2' in s.series_description or 'T2w_SPC' in s.series_description or 'T2w_space' in s.series_description or 't2_space' in s.series_description or 't2_spc' in s.series_description or 'T2_spc' in s.series_description ): 
             if ('dark-fluid' not in s.series_description ):
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[spc_T2w].append({'item': s.series_id})
                 if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_spc_T2w].append({'item': s.series_id})
@@ -633,7 +633,7 @@ def infotodict(seqinfo):
     
         #spc T2w  
         if ('spc_flair' in s.series_description or 'dark-fluid' in s.series_description): 
-            if ('ND' in (s.image_type[3].strip())):
+            if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                 info[spc_FLAIR].append({'item': s.series_id})
             if ('DIS2D' in (s.image_type[3].strip())):
                 info[DIS2D_spc_FLAIR].append({'item': s.series_id})
@@ -643,7 +643,7 @@ def infotodict(seqinfo):
         #TOF angio
         if ('3D_TOF' in s.series_description or 'tof_fl3d' in s.series_description): 
             if (s.dim3>1):
-                if ('ND' in (s.image_type[3].strip())):
+                if ('ND' in (s.image_type[3].strip()) or 'NONE' in (s.image_type[3].strip())):
                     info[TOF_angio] = [s.series_id]
                 if ('DIS2D' in (s.image_type[3].strip())):
                     info[DIS2D_TOF_angio] = [s.series_id]
