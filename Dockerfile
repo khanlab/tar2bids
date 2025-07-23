@@ -5,7 +5,7 @@ LABEL maintainer="<alik@robarts.ca>"
 ENV DCM2NIIXTAG v1.0.20230411
 
 #heudiconv version:
-ENV HEUDICONVTAG unstacked_dcm
+ENV HEUDICONVTAG v1.3.3
 
 #bids validator version:
 ENV BIDSTAG 1.9.7
@@ -44,7 +44,7 @@ RUN apt-get update -qq \
         git \
         python3-setuptools \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && git clone https://github.com/AlanKuurstra/heudiconv.git /src/heudiconv \
+    && git clone https://github.com/nipy/heudiconv.git /src/heudiconv \
     && git -C /src/heudiconv checkout ${HEUDICONVTAG}
 WORKDIR /src/heudiconv
 RUN python3 -m pip install --no-cache-dir -r /src/heudiconv/requirements.txt \
