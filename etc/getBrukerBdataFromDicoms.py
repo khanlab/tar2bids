@@ -45,16 +45,38 @@ with open(fname_noExt+'.bval', 'w') as fp:
         fp.write("%f " % item)
     fp.write("\n")
 
-with open(fname_noExt+'.bvec', 'w') as fp:
-    for row in bvec:
-        for item in row:
-            fp.write("%f " % item)
-        fp.write("\n")
-
 with open(fname_noExt+'.bmat', 'w') as fp:
     for row in bmat:
         for item in row:
             fp.write("%s " % item)
         fp.write("\n")
 
+# Determine bvec from bmat
+bmat = np.transpose(bmat)
+bvecFromMat = np.zeros((len(bval), 3))
+for idx, row in enumerate(bmat):
+    row = np.reshape(row, (3, 3))
+    u, s, vh = np.linalg.svd(row, full_matrices=True)
+    bvecFromMat[idx] = vh[0]
 
+# Get polarity of bvec correct based on input vectors (since polarity is arbitrary after svd)
+bvec = np.transpose(bvec)
+if len(bval) > len(bvec):
+    # Fill in b0 acquisitions that were not in input dir vector
+    for n in range(len(bval) - len(bvec)):
+        idx = np.argsort(bval)
+        if len(bval) != 55:                                       #if not OGSE -- not needed for OGSE since b0 is included in dir vector
+            bvec = np.insert(bvec, idx[0], 0, axis=0)
+for idx, dir_n in enumerate(bvec):
+    mind1 = np.argmax(np.abs(dir_n))
+    mind2 = np.argmax(np.abs(bvecFromMat[idx]))
+    fact = np.sign(dir_n[mind1]*bvecFromMat[idx][mind2])
+    if fact < 0:
+        bvecFromMat[idx] = fact*bvecFromMat[idx]
+
+bvecFromMat = np.transpose(bvecFromMat)
+with open(fname_noExt+'.bvec', 'w') as fp:
+    for row in bvecFromMat:
+        for item in row:
+            fp.write("%s " % item)
+        fp.write("\n")
